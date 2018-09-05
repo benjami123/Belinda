@@ -1,0 +1,12 @@
+program start
+  declare start
+    I i;
+    C[] string;
+  declareend
+  do
+    string <- ||Hello World!||, |\n| ,|\0|;
+    for(i<-0; i < 13; +1) start
+      Console..pritn(string[i]);
+    forend
+  doeend
+programend
