@@ -1,0 +1,11 @@
+program start
+  declare start
+    I i;
+    C c;
+    C function ( C cc , I ii )
+    return ;
+    funcend
+  declareend
+  do
+  doend
+programend
