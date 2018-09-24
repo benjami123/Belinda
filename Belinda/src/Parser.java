@@ -35,25 +35,37 @@ public class Parser
 	
 	private void parseBlock()
 	{
-		accept( Token.PROGRAM );
-		accept( Token.START );
-		accept( Token.DECLARE);
-		accept( Token.START );
+		accept( Token.PROGRAMSTART );
 		parseDeclarations();
-		accept( Token.DECLAREEND );
 		accept( Token.DO );
 		accept( Token.DOEND );
 		accept( Token.PROGRAMEND );
 	}
 	
 	
+	
 	private void parseDeclarations()
 	{
+		accept( Token.DECLARE);
 		while( currentTerminal.kind == Token.I ||
 		       currentTerminal.kind == Token.C ){
 			parseOneDeclaration();
 			System.out.println("Declaration line : "+ ++i );
 		}
+		accept( Token.DECLAREEND );
+	}
+	
+	private void parseFunction()
+	{
+		accept( Token.LEFTPARAN );
+		parseIdList();
+		accept( Token.RIGHTPARAN );
+		parseDeclarations();
+		accept( Token.DO );
+		//parseExpression();
+		accept( Token.GIVEBACKWITH );
+		accept( Token.SEMICOLON );
+		accept( Token.DOEND );
 	}
 	
 	
@@ -71,7 +83,16 @@ public class Parser
 				System.out.println("detect C");
 				accept( Token.C );
 				accept( Token.IDENTIFIER );
-				accept( Token.SEMICOLON );
+				if( currentTerminal.kind == Token.SEMICOLON)
+					accept( Token.SEMICOLON );
+				else
+					if(currentTerminal.kind == Token.LEFTPARAN)
+					{
+						parseFunction();
+					}
+					else
+						System.out.println( "var or func expected" );
+						
 				break;
 				
 			case Token.CFUNC:
@@ -83,10 +104,9 @@ public class Parser
 					
 				accept( Token.RIGHTPARAN );
 				//parseBlock();
-				accept( Token.RETURN );
+				accept( Token.GIVEBACKWITH );
 				//parseExpression();
 				accept( Token.SEMICOLON );
-				accept( Token.FUNCEND );
 				break;
 				
 			default:
@@ -104,17 +124,19 @@ public class Parser
 					System.out.println("detect I");
 					accept( Token.I );
 					accept( Token.IDENTIFIER );
-					accept( Token.COMMA );
 					break;
 			
 				case Token.C:
 					System.out.println("detect C");
 					accept( Token.C );
 					accept( Token.IDENTIFIER );
-					accept( Token.COMMA );
 					break;
 		
 			}
+			if( currentTerminal.kind == Token.RIGHTPARAN )
+				break;
+			else
+				accept( Token.COMMA );
 		}
 	}
 	

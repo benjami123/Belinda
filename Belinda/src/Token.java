@@ -70,7 +70,7 @@ public class Token
 	public static final byte INTEGERLITERAL = 1;
 	public static final byte OPERATOR = 2;
 	
-	public static final byte PROGRAM = 3;
+	public static final byte PROGRAMSTART = 3;
 	public static final byte START = 4;
 	public static final byte DECLARE = 5;
 	public static final byte I = 6;
@@ -83,7 +83,7 @@ public class Token
 	public static final byte CFUNC = 13;
 	public static final byte IFUNC = 14;
 	public static final byte IF = 15;
-	public static final byte RETURN = 16;
+	public static final byte GIVEBACKWITH = 16;
 	public static final byte SAY = 17;
 	public static final byte THEN = 18;
 	public static final byte WHILE = 19;
@@ -97,7 +97,6 @@ public class Token
 	public static final byte EOT = 25;
 	
 	public static final byte ERROR = 26;
-	public static final byte FUNCEND = 27;	//bonjour
 	
 	
 	private static final String SPELLINGS[] =
@@ -106,24 +105,24 @@ public class Token
 		"<integerliteral>",
 		"<operator>",
 		
-		"program",
+		"programStart",
 		"start",
 		"declare",
 		"I",
 		"C",
-		"declareend",
+		"declareEnd",
 		"do",
-		"doend",
+		"doEnd",
 		"else",
 		"fi",
 		"C",
 		"I",
 		"if",
-		"return",
+		"giveBackWith",
 		"say",
 		"then",
 		"while",
-		"programend",
+		"programEnd",
 		
 		",",
 		";",
@@ -131,7 +130,6 @@ public class Token
 		")",
 		"<eot>",
 		"<error>",
-		"funcend",
 	};
 	
 	
