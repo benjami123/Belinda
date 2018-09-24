@@ -76,7 +76,16 @@ public class Parser
 				System.out.println("detect I");
 				accept( Token.I );
 				accept( Token.IDENTIFIER );
-				accept( Token.SEMICOLON );
+				if( currentTerminal.kind == Token.SEMICOLON)
+					accept( Token.SEMICOLON );
+				else
+					if(currentTerminal.kind == Token.LEFTPARAN)
+					{
+						parseFunction();
+					}
+					else
+						System.out.println( "var or func expected" );
+						
 				break;
 				
 			case Token.C:
@@ -93,20 +102,6 @@ public class Parser
 					else
 						System.out.println( "var or func expected" );
 						
-				break;
-				
-			case Token.CFUNC:
-				accept( Token.CFUNC );
-				accept( Token.IDENTIFIER );
-				accept( Token.LEFTPARAN );
-				
-				parseIdList();
-					
-				accept( Token.RIGHTPARAN );
-				//parseBlock();
-				accept( Token.GIVEBACKWITH );
-				//parseExpression();
-				accept( Token.SEMICOLON );
 				break;
 				
 			default:
