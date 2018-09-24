@@ -97,7 +97,7 @@ public class Token
 	public static final byte EOT = 25;
 	
 	public static final byte ERROR = 26;
-	public static final byte FUNCEND = 27;
+	public static final byte FUNCEND = 27;	//bonjour
 	
 	
 	private static final String SPELLINGS[] =
