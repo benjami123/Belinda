@@ -4,7 +4,7 @@
  * 25.09.2009 New package structure
  * 22.09.2006 Original version (based on Example 4.21 in Watt&Brown)
  */
- 
+
 
 
 
@@ -46,14 +46,14 @@ public class Scanner
 	private void scanSeparator()
 	{
 		switch( currentChar ) {
-			case '#':
-				takeIt();
-				while( currentChar != SourceFile.EOL && currentChar != SourceFile.EOT )
-					takeIt();
-					
-				if( currentChar == SourceFile.EOL )
-					takeIt();
-				break;
+//			case '#':
+//				takeIt();
+//				while( currentChar != SourceFile.EOL && currentChar != SourceFile.EOT )
+//					takeIt();
+//
+//				if( currentChar == SourceFile.EOL )
+//					takeIt();
+//				break;
 				
 			case ' ': case '\n': case '\r': case '\t':
 				takeIt();
@@ -69,27 +69,60 @@ public class Scanner
 			while( isLetter( currentChar ) || isDigit( currentChar ) )
 				takeIt();
 				
-			return Token.IDENTIFIER;
+			return Token.VARN_NAME;
 			
 		} else if( isDigit( currentChar ) ) {
 			takeIt();
 			while( isDigit( currentChar ) )
 				takeIt();
 				
-			return Token.INTEGERLITERAL;
+			return Token.LITERAL_NUMBER;
 			
 		} switch( currentChar ) {
-			case '+': case '-': case '*': case '/': case '%':
-				takeIt();
-				return Token.OPERATOR;
-				
+            case '.':
+                takeIt();
+                switch( currentChar ){
+                    case '+': case '-': case '*': case '/': case '%': case '<': case '>': case '=':
+                        takeIt();
+                        return Token.OPERATOR;
+                    case 'a':
+                        takeIt();
+                        if(currentChar == 'n'){
+                            takeIt();
+                            if(currentChar == 'd'){
+                                takeIt();
+                                return Token.OPERATOR;
+                            }else {
+                                return Token.ERROR;
+                            }
+                        }else {
+                            return Token.ERROR;
+                        }
+                    case 'o':
+                        takeIt();
+                        if(currentChar == 'r'){
+                            takeIt();
+                            return Token.OPERATOR;
+                        }else {
+                            return Token.ERROR;
+                        }
+                    case  'n':
+                        takeIt();
+                        if(currentChar == 'o'){
+                            takeIt();
+                            if(currentChar == 't'){
+                                takeIt();
+                                return Token.NOT;
+                            }else {
+                                return Token.ERROR;
+                            }
+                        }else {
+                            return Token.ERROR;
+                        }
+                }
 			case ':':
 				takeIt();
-				if( currentChar == '=' ) {
-					takeIt();
-					return Token.OPERATOR;
-				} else
-					return Token.ERROR;
+				return Token.COLON;
 				
 			case ',':
 				takeIt();
@@ -119,7 +152,7 @@ public class Scanner
 	
 	public Token scan()
 	{
-		while( currentChar == '#' || currentChar == '\n' ||
+		while( /*currentChar == '#' ||*/ currentChar == '\n' ||
 		       currentChar == '\r' || currentChar == '\t' ||
 		       currentChar == ' ' )
 			scanSeparator();

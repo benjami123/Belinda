@@ -26,8 +26,10 @@ public class Parser
 	
 	public void parseProgram()
 	{
+		accept( Token.PROGRAM_START );
 		parseBlock();
-		
+        accept( Token.PROGRAM_END );
+
 		if( currentTerminal.kind != Token.EOT )
 			System.out.println( "Tokens found after end of program" );
 	}
@@ -35,11 +37,11 @@ public class Parser
 	
 	private void parseBlock()
 	{
-		accept( Token.PROGRAMSTART );
+
 		parseDeclarations();
 		accept( Token.DO );
-		accept( Token.DOEND );
-		accept( Token.PROGRAMEND );
+		accept( Token.DO_END );
+
 	}
 	
 	
@@ -52,7 +54,7 @@ public class Parser
 			parseOneDeclaration();
 			System.out.println("Declaration line : "+ ++i );
 		}
-		accept( Token.DECLAREEND );
+		accept( Token.DECLARE_END );
 	}
 	
 	private void parseFunction()
@@ -65,7 +67,7 @@ public class Parser
 		//parseExpression();
 		accept( Token.GIVEBACKWITH );
 		accept( Token.SEMICOLON );
-		accept( Token.DOEND );
+		accept( Token.DO_END );
 	}
 	
 	
