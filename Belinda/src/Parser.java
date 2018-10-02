@@ -11,7 +11,7 @@
 public class Parser
 {
 	private Scanner scan;
-	private int i = 0;
+	private int iLineNumber = 0;
 	
 	private Token currentTerminal;
 	
@@ -37,105 +37,100 @@ public class Parser
 	
 	private void parseBlock()
 	{
-
+		accept( Token.DECLARE);
+		accept( Token.START);
 		parseDeclarations();
+		accept( Token.DECLARE_END);
 		accept( Token.DO );
+		parseComand();
 		accept( Token.DO_END );
 
 	}
-	
-	
 	
 	private void parseDeclarations()
 	{
-		accept( Token.DECLARE);
-		while( currentTerminal.kind == Token.I ||
-		       currentTerminal.kind == Token.C ){
+		while( currentTerminal.kind == Token.TYPE || currentTerminal.kind == Token.VARN_NAME ){
 			parseOneDeclaration();
-			System.out.println("Declaration line : "+ ++i );
+			/*System.out.println("Declaration line : "+ ++iLineNumber );*/
 		}
-		accept( Token.DECLARE_END );
 	}
-	
-	private void parseFunction()
-	{
-		accept( Token.LEFTPARAN );
-		parseIdList();
-		accept( Token.RIGHTPARAN );
-		parseDeclarations();
-		accept( Token.DO );
-		//parseExpression();
-		accept( Token.GIVEBACKWITH );
-		accept( Token.SEMICOLON );
-		accept( Token.DO_END );
-	}
-	
-	
-	private void parseOneDeclaration()
-	{
-		switch( currentTerminal.kind ) {
-			case Token.I:
-				System.out.println("detect I");
-				accept( Token.I );
-				accept( Token.IDENTIFIER );
-				if( currentTerminal.kind == Token.SEMICOLON)
-					accept( Token.SEMICOLON );
-				else
-					if(currentTerminal.kind == Token.LEFTPARAN)
-					{
-						parseFunction();
-					}
-					else
-						System.out.println( "var or func expected" );
-						
+
+	private void parseOneDeclaration() {
+		switch (currentTerminal.kind) {
+			case Token.TYPE:
+				if (currentTerminal.spelling.equals("I")) {
+					System.out.println("detected I");
+
+				} else if (currentTerminal.spelling.equals("C")) {
+					System.out.println("detected C");
+				} else {
+					System.out.println("Erorr you pig, how did you get here?");
+					return;
+				}
+				accept(Token.TYPE);
+				parseVarList();
 				break;
-				
-			case Token.C:
-				System.out.println("detect C");
-				accept( Token.C );
-				accept( Token.IDENTIFIER );
-				if( currentTerminal.kind == Token.SEMICOLON)
-					accept( Token.SEMICOLON );
-				else
-					if(currentTerminal.kind == Token.LEFTPARAN)
-					{
-						parseFunction();
-					}
-					else
-						System.out.println( "var or func expected" );
-						
+
+			case Token.VARN_NAME:
+				System.out.println("Function detected");
+				accept(Token.VARN_NAME);
+				accept(Token.LEFTPARAN);
+				parseArguments();
+				accept(Token.RIGHTPARAN);
+				parseBlock();
 				break;
-				
 			default:
-				System.out.println( "var or func expected" );
+				System.out.println("Function or Type expected");
 				break;
 		}
+		accept(Token.SEMICOLON);
 	}
-	
-	
-	private void parseIdList()
+
+	private void parseVarList(){
+		while(currentTerminal.kind != Token.SEMICOLON) {
+			accept(Token.VARN_NAME);
+			if(currentTerminal.spelling.equals(",")){
+				accept(Token.COMMA);
+			}
+		}
+	}
+
+	private void parseArguments()
 	{
 		while(currentTerminal.kind != Token.RIGHTPARAN) {
-			switch( currentTerminal.kind ) {
-				case Token.I:
-					System.out.println("detect I");
-					accept( Token.I );
-					accept( Token.IDENTIFIER );
-					break;
-			
-				case Token.C:
-					System.out.println("detect C");
-					accept( Token.C );
-					accept( Token.IDENTIFIER );
-					break;
-		
-			}
-			if( currentTerminal.kind == Token.RIGHTPARAN )
+			if (currentTerminal.spelling.equals("I")) {
+				System.out.println("detected I");
+			} else if (currentTerminal.spelling.equals("C")) {
+				System.out.println("detected C");
+			} else {
+				System.out.println("Erorr you pig, how did you get here?");
 				break;
-			else
-				accept( Token.COMMA );
+			}
+			accept(Token.TYPE);
+			accept(Token.VARN_NAME);
+			if (currentTerminal.spelling.equals(",")) {
+				accept(Token.COMMA);
+				/*
+				 * If the next spelling is not a ')' you get an error because we already checked the comma option
+				 * */
+			} else if (!currentTerminal.spelling.equals(")")/*||!currentTerminal.spelling(" ")*/) {
+				System.out.println("Wrong function declaration: arguments");
+				break;
+			}
 		}
 	}
+
+
+
+	private void parseComand(){
+		
+	}
+	
+	
+
+	
+	
+
 	
 	
 	private void parseStatements()
@@ -263,7 +258,7 @@ public class Parser
 	
 	private void accept( byte expected )
 	{
-		System.out.println(currentTerminal.kind + "      " + expected);
+		System.out.println(currentTerminal.kind + "\t" + expected);
 		if( currentTerminal.kind == expected )
 			currentTerminal = scan.scan();
 		else

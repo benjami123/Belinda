@@ -1,11 +1,3 @@
-/*
- * 16.08.2016 IScanner gone, minor editing
- * 20.09.2010 IScanner
- * 25.09.2009 New package structure
- * 22.09.2006 Original version (based on Example 4.21 in Watt&Brown)
- */
-
-
 
 
 public class Scanner
@@ -19,7 +11,7 @@ public class Scanner
 	public Scanner( SourceFile source )
 	{
 		this.source = source;
-		
+
 		currentChar = source.getSource();
 	}
 	
@@ -46,15 +38,15 @@ public class Scanner
 	private void scanSeparator()
 	{
 		switch( currentChar ) {
-//			case '#':
-//				takeIt();
-//				while( currentChar != SourceFile.EOL && currentChar != SourceFile.EOT )
-//					takeIt();
-//
-//				if( currentChar == SourceFile.EOL )
-//					takeIt();
-//				break;
-				
+			case '!':
+				takeIt();
+				while( currentChar != SourceFile.EOL && currentChar != SourceFile.EOT )
+					takeIt();
+
+				if( currentChar == SourceFile.EOL )
+					takeIt();
+				break;
+
 			case ' ': case '\n': case '\r': case '\t':
 				takeIt();
 				break;
@@ -119,6 +111,9 @@ public class Scanner
                         }else {
                             return Token.ERROR;
                         }
+                        default:
+                        	takeIt();
+							return Token.ERROR;
                 }
 			case ':':
 				takeIt();
@@ -152,7 +147,7 @@ public class Scanner
 	
 	public Token scan()
 	{
-		while( /*currentChar == '#' ||*/ currentChar == '\n' ||
+		while( currentChar == '!' || currentChar == '\n' ||
 		       currentChar == '\r' || currentChar == '\t' ||
 		       currentChar == ' ' )
 			scanSeparator();
