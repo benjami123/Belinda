@@ -7,7 +7,7 @@
  */
   
 
-
+//TODO: Finish parseOneComand
 public class Parser
 {
 	private Scanner scan;
@@ -123,11 +123,147 @@ public class Parser
 
 
 	private void parseComand(){
-		
+		while(currentTerminal.kind != Token.DO_END){
+			parseOneCommand();
+		}
 	}
 	
-	
+	private void parseOneCommand(){
+		switch(currentTerminal.kind){
+			case Token.FOR:
+				accept(Token.FOR);
+				accept(Token.FOR_END);
+				break;
 
+			case Token.WHILE:
+				accept(Token.WHILE);
+				parseComand();
+				accept(Token.WHILE_END);
+				break;
+
+			case.Token.IF:
+				break;
+
+			case Token.SWITCH:
+				break;
+
+			default:
+				parseExpression();
+				break;
+		}
+	}
+
+	private void parseExpression(){
+		switch(currentTerminal.kind){
+			case Token.VARN_NAME:
+				accept(Token.VARN_NAME);
+				switch(currentTerminal.kind){
+					case Token.OPERATOR:
+						accept(Token.OPERATOR);
+						parseExpressionLeft();
+						accept(Token.ASSIG_RIGHT);
+						accept(Token.VARN_NAME);
+						break;
+					
+					case Token.ASSIG_LEFT:
+						accept(Token.ASSIG_LEFT);
+						parseExpressionRight();
+						break;
+
+					case Token.ASSIG_RIGHT:
+						accept(Token.ASSIG_RIGHT);
+						accept(Token.VARN_NAME);	
+						break;
+
+					case Token.LEFTPARAN:
+						accept(Token.LEFTPARAN);
+						parseArguments();
+						accept(Token.RIGHTPARAN);
+
+						break;
+
+					default:
+						System.out.println("Expected Operator or ArgsList");
+						break;
+				}
+				accept(Token.SEMICOLON);
+				break;
+			
+			case Token.LITERAL_NUMBER:
+
+				break;
+
+			default:
+				System.out.println("Expected VAR NAME or LITERAL NUMBER");
+				break;
+		}
+	}
+
+	private void parseExpressionRight(){		//For VarName <- Expression;
+		while(currentTerminal.kind != Token.SEMICOLON){
+			switch(currentTerminal.kind){
+				case Token.VarName:
+					accept(Token.VarName);
+					if(currentTerminal.kind == Token.LEFTPARAN){
+						accept(Token.LEFTPARAN);
+						parseArguments();
+						accept(Token.RIGHTPARAN);
+					}
+					break;
+
+				case Token.LITERAL_NUMBER:
+					accept(Token.LITERAL_NUMBER);
+					break;
+
+				default :
+					System.out.println("Expression error, expected LITERAL NUMBER");
+					break;
+			}
+			if(currentTerminal.kind == Token.SEMICOLON){
+				break;
+			}else{
+				if(currentTerminal.kind == Token.OPERATOR){
+					accept(Token.OPERATOR);
+				}else{
+					System.out.println("Expected ;");
+					break;
+				}
+			} 			
+		}
+	}
+
+	private void parseExpressionLeft(){			//For Expression -> VarName;
+		while(currentTerminal.kind != Token.ASSIG_RIGHT){
+			switch(currentTerminal.kind){
+				case Token.VarName:
+					accept(Token.VarName);
+					if(currentTerminal.kind == Token.LEFTPARAN){
+						accept(Token.LEFTPARAN);
+						parseArguments();
+						accept(Token.RIGHTPARAN);
+					}
+					break;
+
+				case Token.LITERAL_NUMBER:
+					accept(Token.LITERAL_NUMBER);
+					break;
+
+				default :
+					System.out.println("Expression error, expected LITERAL NUMBER");
+					break;
+			}
+			if(currentTerminal.kind == Token.ASSIG_RIGHT){
+				break;
+			}else{
+				if(currentTerminal.kind == Token.OPERATOR){
+					accept(Token.OPERATOR);
+				}else{
+					System.out.println("Expected ->");
+					break;
+				}
+			} 			
+		}	
+	}
 	
 	
 
@@ -194,14 +330,14 @@ public class Parser
 	}
 	
 	
-	private void parseExpression()
+/*	private void parseExpression()
 	{
 		parsePrimary();
 		while( currentTerminal.kind == Token.OPERATOR ) {
 			accept( Token.OPERATOR );
 			parsePrimary();
 		}
-	}
+	}*/
 	
 	
 	private void parsePrimary()

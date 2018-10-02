@@ -59,8 +59,7 @@ public class Scanner
 		if( isLetter( currentChar ) ) {
 			takeIt();
 			while( isLetter( currentChar ) || isDigit( currentChar ) )
-				takeIt();
-				
+				takeIt();				
 			return Token.VARN_NAME;
 			
 		} else if( isDigit( currentChar ) ) {
@@ -70,6 +69,16 @@ public class Scanner
 				
 			return Token.LITERAL_NUMBER;
 			
+		} else if(currentChar == '|'){
+			takeIt();
+			takeIt();	//Char that will be transformed with the ascii table
+			if(currentChar == '|'){
+				takeIt();
+				return Token.LITERAL_NUMBER;
+			}else{
+				return Token.ERROR;
+			}
+
 		} switch( currentChar ) {
             case '.':
                 takeIt();
