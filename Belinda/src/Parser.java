@@ -123,7 +123,8 @@ public class Parser
 
 
 	private void parseComand(){
-		while(currentTerminal.kind != Token.DO_END){
+		while(currentTerminal.kind != Token.DO_END && currentTerminal.kind != Token.FOR_END &&
+				currentTerminal.kind != Token.WHILE_END){
 			parseOneCommand();
 		}
 	}
@@ -132,266 +133,300 @@ public class Parser
 		switch(currentTerminal.kind){
 			case Token.FOR:
 				accept(Token.FOR);
+				accept(Token.LEFTPARAN);
+				parseAssignment();
+				parseOperation();
+				accept(Token.SEMICOLON);
+				accept(Token.OPERATOR);
+				if(currentTerminal.kind == Token.VARN_NAME){
+					accept(Token.VARN_NAME);
+				}else if (currentTerminal.kind == Token.LITERAL_NUMBER){
+					accept(Token.LITERAL_NUMBER);
+				}else{
+					System.out.println("Error: Number or variable name expected");
+				}
+				accept(Token.RIGHTPARAN);
+				accept(Token.START);
+				parseComand();
 				accept(Token.FOR_END);
 				break;
 
 			case Token.WHILE:
 				accept(Token.WHILE);
+				accept(Token.LEFTPARAN);
+				parseOperation();
+				accept(Token.RIGHTPARAN);
+				accept(Token.START);
 				parseComand();
 				accept(Token.WHILE_END);
 				break;
 
-			case.Token.IF:
+			case Token.IF:
+				accept(Token.IF);
+				accept(Token.LEFTPARAN);
+				parseOperation();
+				accept(Token.RIGHTPARAN);
+				accept(Token.START);
+				parseComand();
+				while (currentTerminal.kind != Token.FI){
+					boolean error = false;
+					switch (currentTerminal.kind){
+						case Token.ELIF:
+							accept(Token.ELIF);
+							accept(Token.LEFTPARAN);
+							parseOperation();
+							accept(Token.RIGHTPARAN);
+							accept(Token.START);
+							parseComand();
+							break;
+						case Token.ELSE:
+							accept(Token.ELSE);
+							parseComand();
+							if(currentTerminal.kind != Token.FI){
+								error = true;
+								System.out.println("Error, after else statement expected fi");
+							}
+							break;
+						case Token.FI:
+							break;
+						default:
+							System.out.println("Error, elif, else or fi expected");
+							error = true;
+							break;
+					}
+					if(error){
+						break;
+					}
+				}
+				accept(Token.FI);
 				break;
 
 			case Token.SWITCH:
+
+				accept(Token.SWITCH);
+				accept(Token.LEFTPARAN);
+				accept(Token.VARN_NAME);
+				accept(Token.RIGHTPARAN);
+				accept(Token.COLON);
+				accept(Token.CASE);
+				accept(Token.LITERAL_NUMBER);
+				accept(Token.START);
+				parseComand();
+				accept(Token.END);
+				while (currentTerminal.kind != Token.SWTICH_END){
+					boolean error = false;
+					boolean out_Default = false;
+					switch (currentTerminal.kind){
+						case Token.CASE:
+							accept(Token.CASE);
+							accept(Token.LITERAL_NUMBER);
+							accept(Token.START);
+							parseComand();
+							accept(Token.END);
+							break;
+						case Token.DEFAULT:
+							accept(Token.DEFAULT);
+							accept(Token.START);
+							parseComand();
+							accept(Token.END);
+							out_Default = true;
+							break;
+						default:
+							System.out.println("Error, case or default expected");
+							error = true;
+							break;
+					}
+					if(error || out_Default){
+						break;
+					}
+				}
+				accept(Token.SWTICH_END);
 				break;
 
+			case Token.END:
+				accept(Token.END);
+				accept(Token.SEMICOLON);
+				break;
+
+			case Token.GIVEBACKWITH:
+				accept(Token.GIVEBACKWITH);
+				if(currentTerminal.kind == Token.NOTHING){
+					accept(Token.NOTHING);
+				}else {
+					parseOperation();
+				}
+				accept(Token.SEMICOLON);
+				break;
 			default:
-				parseExpression();
+				parseAssignmentOrFunction();
 				break;
 		}
 	}
 
-	private void parseExpression(){
+	private void parseAssignment(){
 		switch(currentTerminal.kind){
 			case Token.VARN_NAME:
 				accept(Token.VARN_NAME);
 				switch(currentTerminal.kind){
 					case Token.OPERATOR:
 						accept(Token.OPERATOR);
-						parseExpressionLeft();
+						parseOperation();
 						accept(Token.ASSIG_RIGHT);
 						accept(Token.VARN_NAME);
 						break;
-					
 					case Token.ASSIG_LEFT:
 						accept(Token.ASSIG_LEFT);
-						parseExpressionRight();
+						parseOperationOrFunctionCall();
 						break;
-
 					case Token.ASSIG_RIGHT:
 						accept(Token.ASSIG_RIGHT);
-						accept(Token.VARN_NAME);	
+						accept(Token.VARN_NAME);
 						break;
+					default:
+						System.out.println("Error expected LeftParan, operator or assignment");
+						break;
+				}
+				break;
+			case Token.LITERAL_NUMBER:
+				accept(Token.LITERAL_NUMBER);
+				switch(currentTerminal.kind){
+					case Token.OPERATOR:
+						accept(Token.OPERATOR);
+						parseOperation();
+						accept(Token.ASSIG_RIGHT);
+						accept(Token.VARN_NAME);
+						break;
+					case Token.ASSIG_RIGHT:
+						accept(Token.ASSIG_RIGHT);
+						accept(Token.VARN_NAME);
+						break;
+					default:
+						System.out.println("Error expected operator or assignment right");
+						break;
+				}
+				break;
+			default:
+				System.out.println("Expected VAR NAME, LITERAL NUMBER or FUNCTION_CALL");
+				break;
+		}
+		accept(Token.SEMICOLON);
+	}
 
+	private void parseAssignmentOrFunction() {
+		switch(currentTerminal.kind){
+			case Token.VARN_NAME:
+				accept(Token.VARN_NAME);
+				switch(currentTerminal.kind){
 					case Token.LEFTPARAN:
 						accept(Token.LEFTPARAN);
 						parseArguments();
 						accept(Token.RIGHTPARAN);
-
 						break;
-
+					case Token.OPERATOR:
+						accept(Token.OPERATOR);
+						parseOperation();
+						accept(Token.ASSIG_RIGHT);
+						accept(Token.VARN_NAME);
+						break;
+					case Token.ASSIG_LEFT:
+						accept(Token.ASSIG_LEFT);
+						parseOperationOrFunctionCall();
+						break;
+					case Token.ASSIG_RIGHT:
+						accept(Token.ASSIG_RIGHT);
+						accept(Token.VARN_NAME);
+						break;
 					default:
-						System.out.println("Expected Operator or ArgsList");
+						System.out.println("Error expected LeftParan, operator or assignment");
 						break;
 				}
-				accept(Token.SEMICOLON);
 				break;
-			
 			case Token.LITERAL_NUMBER:
-
+				accept(Token.LITERAL_NUMBER);
+				switch(currentTerminal.kind){
+					case Token.OPERATOR:
+						accept(Token.OPERATOR);
+						parseOperation();
+						accept(Token.ASSIG_RIGHT);
+						accept(Token.VARN_NAME);
+						break;
+					case Token.ASSIG_RIGHT:
+						accept(Token.ASSIG_RIGHT);
+						accept(Token.VARN_NAME);
+						break;
+					default:
+						System.out.println("Error expected operator or assignment right");
+						break;
+				}
 				break;
+				default:
+					System.out.println("Expected VAR NAME, LITERAL NUMBER or FUNCTION_CALL");
+					break;
+		}
+		accept(Token.SEMICOLON);
+	}
 
-			default:
-				System.out.println("Expected VAR NAME or LITERAL NUMBER");
-				break;
+	private void parseOperation(){
+		while (currentTerminal.kind != Token.SEMICOLON && currentTerminal.kind != Token.ASSIG_RIGHT){
+			boolean notNot = false; //flag used to check if the negation was found: if was not look for an operator ora a semicolon or an assignment
+			switch (currentTerminal.kind){
+				case Token.VARN_NAME:
+					accept(Token.VARN_NAME);
+					notNot = true;
+					break;
+				case Token.LITERAL_NUMBER:
+					accept(Token.LITERAL_NUMBER);
+					notNot = true;
+					break;
+				case  Token.NOT:
+					accept(Token.NOT);
+					break;
+				default:
+					System.out.println("Error, VarName, LiteralNumber or negation expected");
+					break;
+			}
+			if(notNot){
+				switch (currentTerminal.kind){
+					case Token.OPERATOR:
+						accept(Token.OPERATOR);
+						break;
+					case Token.ASSIG_RIGHT:
+					case Token.SEMICOLON:
+						break;
+					default:
+						System.out.println("Error, Operator, assignment right or semicolon expected");
+						break;
+				}
+			}
 		}
 	}
 
-	private void parseExpressionRight(){		//For VarName <- Expression;
-		while(currentTerminal.kind != Token.SEMICOLON){
-			switch(currentTerminal.kind){
-				case Token.VarName:
-					accept(Token.VarName);
+	private void parseOperationOrFunctionCall(){
+		switch (currentTerminal.kind){
+			case Token.LITERAL_NUMBER:
+				accept(Token.LITERAL_NUMBER);
+				if(currentTerminal.kind == Token.OPERATOR){
+					accept(Token.OPERATOR);
+					parseOperation();
+				}
+				break;
+
+				case Token.VARN_NAME:
+					accept(Token.VARN_NAME);
 					if(currentTerminal.kind == Token.LEFTPARAN){
 						accept(Token.LEFTPARAN);
 						parseArguments();
 						accept(Token.RIGHTPARAN);
+					}else if(currentTerminal.kind == Token.OPERATOR){
+						accept(Token.OPERATOR);
+						parseOperation();
+					}else {
+						System.out.println("Eroror, letfParan or operator expected");
 					}
 					break;
-
-				case Token.LITERAL_NUMBER:
-					accept(Token.LITERAL_NUMBER);
-					break;
-
-				default :
-					System.out.println("Expression error, expected LITERAL NUMBER");
-					break;
-			}
-			if(currentTerminal.kind == Token.SEMICOLON){
-				break;
-			}else{
-				if(currentTerminal.kind == Token.OPERATOR){
-					accept(Token.OPERATOR);
-				}else{
-					System.out.println("Expected ;");
-					break;
-				}
-			} 			
 		}
 	}
 
-	private void parseExpressionLeft(){			//For Expression -> VarName;
-		while(currentTerminal.kind != Token.ASSIG_RIGHT){
-			switch(currentTerminal.kind){
-				case Token.VarName:
-					accept(Token.VarName);
-					if(currentTerminal.kind == Token.LEFTPARAN){
-						accept(Token.LEFTPARAN);
-						parseArguments();
-						accept(Token.RIGHTPARAN);
-					}
-					break;
-
-				case Token.LITERAL_NUMBER:
-					accept(Token.LITERAL_NUMBER);
-					break;
-
-				default :
-					System.out.println("Expression error, expected LITERAL NUMBER");
-					break;
-			}
-			if(currentTerminal.kind == Token.ASSIG_RIGHT){
-				break;
-			}else{
-				if(currentTerminal.kind == Token.OPERATOR){
-					accept(Token.OPERATOR);
-				}else{
-					System.out.println("Expected ->");
-					break;
-				}
-			} 			
-		}	
-	}
-	
-	
-
-	
-	
-	private void parseStatements()
-	{
-		while( currentTerminal.kind == Token.IDENTIFIER ||
-		       currentTerminal.kind == Token.OPERATOR ||
-		       currentTerminal.kind == Token.INTEGERLITERAL ||
-		       currentTerminal.kind == Token.LEFTPARAN ||
-		       currentTerminal.kind == Token.IF ||
-		       currentTerminal.kind == Token.WHILE ||
-		       currentTerminal.kind == Token.SAY )
-			parseOneStatement();
-	}
-	
-	
-	private void parseOneStatement()
-	{
-		switch( currentTerminal.kind ) {
-			case Token.IDENTIFIER:
-			case Token.INTEGERLITERAL:
-			case Token.OPERATOR:
-			case Token.LEFTPARAN:
-				parseExpression();
-				accept( Token.SEMICOLON );
-				break;
-				
-			case Token.IF:
-				accept( Token.IF );
-				parseExpression();
-				accept( Token.THEN );
-				parseStatements();
-				
-				if( currentTerminal.kind == Token.ELSE ) {
-					accept( Token.ELSE );
-					parseStatements();
-				}
-				
-				accept( Token.FI );
-				accept( Token.SEMICOLON );
-				break;
-				
-//			case Token.WHILE:
-//				accept( Token.WHILE );
-//				parseExpression();
-//				accept( Token.DO );
-//				parseStatements();
-//				accept( Token.OD );
-//				accept( Token.SEMICOLON );
-//				break;
-				
-			case Token.SAY:
-				accept( Token.SAY );
-				parseExpression();
-				accept( Token.SEMICOLON );
-				break;
-				
-			default:
-				System.out.println( "Error in statement" );
-				break;
-		}
-	}
-	
-	
-/*	private void parseExpression()
-	{
-		parsePrimary();
-		while( currentTerminal.kind == Token.OPERATOR ) {
-			accept( Token.OPERATOR );
-			parsePrimary();
-		}
-	}*/
-	
-	
-	private void parsePrimary()
-	{
-		switch( currentTerminal.kind ) {
-			case Token.IDENTIFIER:
-				accept( Token.IDENTIFIER );
-				
-				if( currentTerminal.kind == Token.LEFTPARAN ) {
-					accept( Token.LEFTPARAN );
-					
-					if( currentTerminal.kind == Token.IDENTIFIER ||
-					    currentTerminal.kind == Token.INTEGERLITERAL ||
-					    currentTerminal.kind == Token.OPERATOR ||
-					    currentTerminal.kind == Token.LEFTPARAN )
-						parseExpressionList();
-						
-					
-					accept( Token.RIGHTPARAN );
-				}
-				break;
-				
-			case Token.INTEGERLITERAL:
-				accept( Token.INTEGERLITERAL );
-				break;
-				
-			case Token.OPERATOR:
-				accept( Token.OPERATOR );
-				parsePrimary();
-				break;
-				
-			case Token.LEFTPARAN:
-				accept( Token.LEFTPARAN );
-				parseExpression();
-				accept( Token.RIGHTPARAN );
-				break;
-				
-			default:
-				System.out.println( "Error in primary" );
-				break;
-		}
-	}
-	
-	
-	private void parseExpressionList()
-	{
-		parseExpression();
-		while( currentTerminal.kind == Token.COMMA ) {
-			accept( Token.COMMA );
-			parseExpression();
-		}
-	}
-	
-	
 	private void accept( byte expected )
 	{
 		System.out.println(currentTerminal.kind + "\t" + expected);
