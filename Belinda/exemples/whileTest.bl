@@ -1,0 +1,11 @@
+programStart
+  declare start
+    I i, g, h;
+    C c;
+  declareEnd
+  do
+    while(5 .> 6) start
+        c -> g;
+    whileEnd
+  doEnd
+programEnd

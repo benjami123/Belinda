@@ -1,0 +1,11 @@
+programStart
+  declare start
+    I i, g, h;
+    C c;
+  declareEnd
+  do
+    for( i<-6 .+h ;i .> 6 .-3; .-1) start
+        c -> g;
+    forEnd
+  doEnd
+programEnd

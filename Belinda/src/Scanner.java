@@ -21,8 +21,18 @@ public class Scanner
 		currentSpelling.append( currentChar );
 		currentChar = source.getSource();
 	}
-	
-	
+
+	private boolean isType( char c )
+	{
+		for (char arC: Token.TYPES) {
+			if(arC == c){
+				return true;
+			}
+		}
+		return false;
+	}
+
+
 	private boolean isLetter( char c )
 	{
 		return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z';
@@ -56,7 +66,10 @@ public class Scanner
 	
 	private byte scanToken()
 	{
-		if( isLetter( currentChar ) ) {
+		if(isType(currentChar)){
+			takeIt();
+			return Token.TYPE;
+		}else if( isLetter( currentChar ) ) {
 			takeIt();
 			while( isLetter( currentChar ) || isDigit( currentChar ) )
 				takeIt();				
@@ -143,6 +156,26 @@ public class Scanner
 			case ')':
 				takeIt();
 				return Token.RIGHTPARAN;
+			case '<':
+				takeIt();
+				if(currentChar == '-'){
+					takeIt();
+					return Token.ASSIG_LEFT;
+				}else {
+					System.out.println("Error: expected - after < to do the left assignment");
+					takeIt();
+					return Token.ERROR;
+				}
+			case '-':
+				takeIt();
+				if(currentChar == '>'){
+					takeIt();
+					return Token.ASSIG_RIGHT;
+				}else {
+					System.out.println("Error: expected > after - to do the right assignment");
+					takeIt();
+					return Token.ERROR;
+				}
 				
 			case SourceFile.EOT:
 				return Token.EOT;

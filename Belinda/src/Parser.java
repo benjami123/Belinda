@@ -50,6 +50,7 @@ public class Parser
 	private void parseDeclarations()
 	{
 		while( currentTerminal.kind == Token.TYPE || currentTerminal.kind == Token.VARN_NAME ){
+
 			parseOneDeclaration();
 			/*System.out.println("Declaration line : "+ ++iLineNumber );*/
 		}
@@ -120,6 +121,32 @@ public class Parser
 		}
 	}
 
+	private void parseFunctionCallArguments()
+	{
+		while(currentTerminal.kind != Token.RIGHTPARAN) {
+			switch (currentTerminal.kind){
+				case Token.VARN_NAME:
+					accept(Token.VARN_NAME);
+					break;
+				case Token.LITERAL_NUMBER:
+					accept(Token.LITERAL_NUMBER);
+					break;
+				default:
+					System.out.println("Error: expected var name or literal number as arguments for function call");
+					break;
+			}
+
+			if (currentTerminal.spelling.equals(",")) {
+				accept(Token.COMMA);
+				/*
+				 * If the next spelling is not a ')' you get an error because we already checked the comma option
+				 * */
+			} else if (!currentTerminal.spelling.equals(")")/*||!currentTerminal.spelling(" ")*/) {
+				System.out.println("Wrong function declaration: arguments");
+				break;
+			}
+		}
+	}
 
 
 	private void parseComand(){
@@ -319,7 +346,7 @@ public class Parser
 				switch(currentTerminal.kind){
 					case Token.LEFTPARAN:
 						accept(Token.LEFTPARAN);
-						parseArguments();
+						parseFunctionCallArguments();
 						accept(Token.RIGHTPARAN);
 						break;
 					case Token.OPERATOR:
@@ -367,7 +394,7 @@ public class Parser
 	}
 
 	private void parseOperation(){
-		while (currentTerminal.kind != Token.SEMICOLON && currentTerminal.kind != Token.ASSIG_RIGHT){
+		while (currentTerminal.kind != Token.SEMICOLON && currentTerminal.kind != Token.ASSIG_RIGHT && currentTerminal.kind != Token.RIGHTPARAN){
 			boolean notNot = false; //flag used to check if the negation was found: if was not look for an operator ora a semicolon or an assignment
 			switch (currentTerminal.kind){
 				case Token.VARN_NAME:
@@ -392,6 +419,7 @@ public class Parser
 						break;
 					case Token.ASSIG_RIGHT:
 					case Token.SEMICOLON:
+					case Token.RIGHTPARAN:
 						break;
 					default:
 						System.out.println("Error, Operator, assignment right or semicolon expected");
@@ -415,7 +443,7 @@ public class Parser
 					accept(Token.VARN_NAME);
 					if(currentTerminal.kind == Token.LEFTPARAN){
 						accept(Token.LEFTPARAN);
-						parseArguments();
+						parseFunctionCallArguments();
 						accept(Token.RIGHTPARAN);
 					}else if(currentTerminal.kind == Token.OPERATOR){
 						accept(Token.OPERATOR);
@@ -429,7 +457,7 @@ public class Parser
 
 	private void accept( byte expected )
 	{
-		System.out.println(currentTerminal.kind + "\t" + expected);
+		System.out.println(currentTerminal.kind + "\t" + expected + " " + Token.SPELLINGS[currentTerminal.kind]);
 		if( currentTerminal.kind == expected )
 			currentTerminal = scan.scan();
 		else

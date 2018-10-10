@@ -99,7 +99,8 @@ public class Token {
 
 
 
-	private static final String SPELLINGS[] = {
+	public static final String SPELLINGS[] = {
+			"<type>",
 			"<var_name>",
 			"<Literal_number>",
 			"<operator>",
@@ -160,8 +161,8 @@ public class Token {
 			".%"
 	};
 
-	private static final String TYPES[] = {
-			"C",
-			"I"
+	public static final char TYPES[] = {
+			'C',
+			'I'
 	};
 }
