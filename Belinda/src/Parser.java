@@ -52,7 +52,7 @@ public class Parser
 		while( currentTerminal.kind == Token.TYPE || currentTerminal.kind == Token.VARN_NAME ){
 
 			parseOneDeclaration();
-			/*System.out.println("Declaration line : "+ ++iLineNumber );*/
+
 		}
 	}
 
