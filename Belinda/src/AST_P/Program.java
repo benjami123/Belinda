@@ -1,4 +1,4 @@
-package AST;
+package AST_P;
 
 public class Program extends AST{
     public Block block;

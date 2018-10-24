@@ -73,7 +73,7 @@ public class Parser
 				break;
 
 			case Token.VARN_NAME:
-				System.out.println("Function detected");
+				System.out.println("FunctionDeclaration detected");
 				accept(Token.VARN_NAME);
 				accept(Token.LEFTPARAN);
 				parseArguments();
@@ -81,7 +81,7 @@ public class Parser
 				parseBlock();
 				break;
 			default:
-				System.out.println("Function or Type expected");
+				System.out.println("FunctionDeclaration or Type expected");
 				break;
 		}
 		accept(Token.SEMICOLON);
@@ -115,7 +115,7 @@ public class Parser
 				 * If the next spelling is not a ')' you get an error because we already checked the comma option
 				 * */
 			} else if (!currentTerminal.spelling.equals(")")/*||!currentTerminal.spelling(" ")*/) {
-				System.out.println("Wrong function declaration: arguments");
+				System.out.println("Wrong functionDeclaration declaration: arguments");
 				break;
 			}
 		}
@@ -132,7 +132,7 @@ public class Parser
 					accept(Token.LITERAL_NUMBER);
 					break;
 				default:
-					System.out.println("Error: expected var name or literal number as arguments for function call");
+					System.out.println("Error: expected var name or literal number as arguments for functionDeclaration call");
 					break;
 			}
 
@@ -142,7 +142,7 @@ public class Parser
 				 * If the next spelling is not a ')' you get an error because we already checked the comma option
 				 * */
 			} else if (!currentTerminal.spelling.equals(")")/*||!currentTerminal.spelling(" ")*/) {
-				System.out.println("Wrong function declaration: arguments");
+				System.out.println("Wrong functionDeclaration declaration: arguments");
 				break;
 			}
 		}

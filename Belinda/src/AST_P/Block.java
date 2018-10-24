@@ -1,4 +1,4 @@
-package AST;
+package AST_P;
 
 public class Block extends AST {
     public Declarations declarations;
