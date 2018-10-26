@@ -1,4 +1,4 @@
 package AST_P;
 
-public class Command extends AST{
+public abstract class Command extends AST{
 }

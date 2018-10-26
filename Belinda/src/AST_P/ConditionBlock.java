@@ -1,4 +1,4 @@
 package AST_P;
 
-public class ConditionBlock extends Command{
+public abstract class ConditionBlock extends Command{
 }

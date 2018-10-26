@@ -1,4 +1,4 @@
-
+package TO_PA_SC;
 
 public class Scanner
 {

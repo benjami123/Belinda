@@ -1,15 +1,15 @@
 package AST_P;
 
-import java.util.Vector;
+import java.util.*;
 
 public class IfStatement extends ConditionBlock {
     Operation mainOperation;
-    Vector<Operation> otherOperations;
+    Collection<Operation> otherOperations;
     Commands mainCommands;
-    Vector<Commands> otherCommands;
+    Collection<Commands> otherCommands;
 
 
-    public IfStatement(Operation mainOperation, Vector<Operation> otherOperations, Commands mainCommands, Vector<Commands> otherCommands) {
+    public IfStatement(Operation mainOperation, Collection<Operation> otherOperations, Commands mainCommands, Collection<Commands> otherCommands) {
         this.mainOperation = mainOperation;
         this.otherOperations = otherOperations;
         this.mainCommands = mainCommands;

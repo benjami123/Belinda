@@ -1,13 +1,14 @@
 package AST_P;
 
-import java.util.Vector;
+import java.util.*;
+
 
 public class SwitchStatement extends ConditionBlock {
     VarName varName;
-    Vector<LiteralNumber> literalNumbers;
-    Vector<Commands> commands;
+    Collection<LiteralNumber> literalNumbers;
+    Collection<Commands> commands;
 
-    public SwitchStatement(VarName varName, Vector<LiteralNumber> literalNumbers, Vector<Commands> commands) {
+    public SwitchStatement(VarName varName, Collection<LiteralNumber> literalNumbers, Collection<Commands> commands) {
         this.varName = varName;
         this.literalNumbers = literalNumbers;
         this.commands = commands;

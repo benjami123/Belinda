@@ -1,4 +1,4 @@
 package AST_P;
 
-public class Expression extends AST {
+public abstract class Expression extends Command {
 }

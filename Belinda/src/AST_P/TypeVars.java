@@ -1,15 +1,16 @@
 package AST_P;
 
-import java.util.Vector;
+import java.util.*;
 
 public class TypeVars extends AST {
-    Vector<TypeVar> typeVars = new Vector<>();
+    Collection<TypeVar> typeVars;
 
-    public TypeVars(Vector<TypeVar> typeVars) {
+    public TypeVars(Collection<TypeVar> typeVars) {
         this.typeVars = typeVars;
     }
 
     public TypeVars(TypeVar... typeVars) {
+        this.typeVars = new ArrayList<>();
         for (TypeVar tv : typeVars) {
             this.typeVars.add(tv);
         }

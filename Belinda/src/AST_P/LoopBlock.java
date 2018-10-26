@@ -1,4 +1,4 @@
 package AST_P;
 
-public class LoopBlock extends Command {
+public abstract class LoopBlock extends Command {
 }

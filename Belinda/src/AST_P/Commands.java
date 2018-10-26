@@ -1,20 +1,21 @@
 package AST_P;
 
-import java.util.Vector;
+
+import java.util.*;
+
 
 public class Commands extends AST {
-    public Vector<Command> commands = new Vector<Command>();
+    public Collection<Command> commands;
 
-    public Commands() {
-    }
 
     public Commands(Command... commands ) {
+        this.commands = new ArrayList<>();
         for (Command c : commands) {
             this.commands.add(c);
         }
     }
 
-    public Commands(Vector<Command> command) {
+    public Commands(Collection<Command> command) {
         this.commands = command;
     }
 }

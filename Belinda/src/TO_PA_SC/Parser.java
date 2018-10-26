@@ -1,4 +1,4 @@
-/*
+package TO_PA_SC;/*
  * 30.08.2016 IParse gone, IScanner gone, minor editing
  * 24.09.2010 IParser
  * 07.10.2009 New package structure

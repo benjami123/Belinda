@@ -1,4 +1,13 @@
 package AST_P;
 
-public class Operation extends AST {
+import java.util.Collection;
+
+public class Operation extends Expression {
+    Collection<Expression> expressions;
+    Collection<Operator> operators;
+
+    public Operation(Collection<Expression> expressions, Collection<Operator> operators) {
+        this.expressions = expressions;
+        this.operators = operators;
+    }
 }

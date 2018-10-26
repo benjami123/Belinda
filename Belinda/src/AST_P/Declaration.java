@@ -1,4 +1,4 @@
 package AST_P;
 
-public class Declaration extends AST {
+public abstract class Declaration extends AST {
 }

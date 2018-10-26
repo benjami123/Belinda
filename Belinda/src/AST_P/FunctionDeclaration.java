@@ -3,12 +3,12 @@ package AST_P;
 import java.util.Vector;
 
 public class FunctionDeclaration extends Declaration{
-    VarName varName;
+    VarName funcName;
     TypeVars typeVars;
     Block block;
 
     public FunctionDeclaration(VarName varName, TypeVars typeVars, Block block){
-        this.varName = varName;
+        this.funcName = varName;
         this.typeVars = typeVars;
         this.block = block;
     }

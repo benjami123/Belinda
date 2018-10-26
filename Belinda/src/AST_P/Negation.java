@@ -1,4 +1,4 @@
 package AST_P;
 
-public class Negation extends Terminal {
+public class Negation extends Expression {
 }

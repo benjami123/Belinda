@@ -9,6 +9,10 @@
 
 
 
+import TO_PA_SC.Parser;
+import TO_PA_SC.Scanner;
+import TO_PA_SC.SourceFile;
+
 import javax.swing.*;
 
 
