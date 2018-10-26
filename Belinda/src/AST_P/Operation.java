@@ -3,11 +3,13 @@ package AST_P;
 import java.util.Collection;
 
 public class Operation extends Expression {
-    Collection<Expression> expressions;
-    Collection<Operator> operators;
+    Expression left;
+    Operator operator;
+    Expression right;
 
-    public Operation(Collection<Expression> expressions, Collection<Operator> operators) {
-        this.expressions = expressions;
-        this.operators = operators;
+    public Operation(Expression left, Operator operator, Expression right) {
+        this.left = left;
+        this.operator = operator;
+        this.right = right;
     }
 }
