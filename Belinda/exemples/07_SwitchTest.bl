@@ -1,0 +1,18 @@
+programStart
+  declare start
+    I i, g, h;
+    C c;
+  declareEnd
+  do
+    switch(g):
+      case 7 start
+      end;
+      case -8 start
+      end;
+      default start
+      func();
+      end;
+      switchEnd
+    giveBackWith nothing;
+  doEnd
+programEnd

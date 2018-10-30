@@ -1,6 +1,6 @@
 package AST_P;
 
-public class Assignment extends Command {
+public class Assignment extends AssignmentOrFunctionCallAlone {
     VarName varName;
     AssignmentOperator assignmentOperator;
     Expression expression;

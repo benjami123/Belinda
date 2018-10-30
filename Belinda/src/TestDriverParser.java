@@ -9,6 +9,7 @@
 
 
 
+import AST_P.AST;
 import TO_PA_SC.Parser;
 import TO_PA_SC.Scanner;
 import TO_PA_SC.SourceFile;
@@ -24,14 +25,15 @@ public class TestDriverParser
 	public static void main( String args[] )
 	{
 		JFileChooser fc = new JFileChooser( EXAMPLES_DIR );
-		
+		AST programTree = null;
 		if( fc.showOpenDialog( null ) == JFileChooser.APPROVE_OPTION ) {
 			SourceFile in = new SourceFile( fc.getSelectedFile().getAbsolutePath() );
 			Scanner s = new Scanner( in );
 			Parser p = new Parser( s );
 		
-			p.parseProgram();
+			programTree = p.parseProgram();
 		}
+		System.out.println(programTree);
 		System.out.println("fin");
 	}
 }

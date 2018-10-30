@@ -92,7 +92,13 @@ public class Scanner
 				return Token.ERROR;
 			}
 
-		} switch( currentChar ) {
+		} else if(currentChar == '-'){
+			takeIt();
+			while( isDigit( currentChar ) )
+				takeIt();
+			return Token.LITERAL_NUMBER;
+		}
+		switch( currentChar ) {
             case '.':
                 takeIt();
                 switch( currentChar ){

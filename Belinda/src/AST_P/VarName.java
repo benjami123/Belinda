@@ -12,4 +12,8 @@ public class VarName extends Expression {
     public VarName(String value) {
         this.value = value;
     }
+
+    public String getVarValue(){
+        return this.value;
+    }
 }

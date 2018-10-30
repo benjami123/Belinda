@@ -18,4 +18,16 @@ public class FunctionCall extends Expression {
         this.arguments = null;
         this.numberOfArg = 0;
     }
+
+    public VarName getFuncName() {
+        return funcName;
+    }
+
+    public Collection<Expression> getArguments() {
+        return arguments;
+    }
+
+    public int getNumberOfArg() {
+        return numberOfArg;
+    }
 }

@@ -5,12 +5,10 @@ import java.util.*;
 
 public class SwitchStatement extends ConditionBlock {
     VarName varName;
-    Collection<LiteralNumber> literalNumbers;
-    Collection<Commands> commands;
+    Collection<SwitchCase> switchCases;
 
-    public SwitchStatement(VarName varName, Collection<LiteralNumber> literalNumbers, Collection<Commands> commands) {
+    public SwitchStatement(VarName varName, Collection<SwitchCase> switchCases) {
         this.varName = varName;
-        this.literalNumbers = literalNumbers;
-        this.commands = commands;
+        this.switchCases = switchCases;
     }
 }
