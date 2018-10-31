@@ -1,0 +1,8 @@
+programStart
+  declare start
+    I[] i, g, h;
+    C[5] c;
+  declareEnd
+  do
+  doEnd
+programEnd

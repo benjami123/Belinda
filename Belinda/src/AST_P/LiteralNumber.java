@@ -1,9 +1,9 @@
 package AST_P;
 
 public class LiteralNumber extends Expression {
-    int value;
+    String value;
 
-    public LiteralNumber(int value) {
+    public LiteralNumber(String value) {
         this.value = value;
     }
 }

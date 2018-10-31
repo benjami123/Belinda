@@ -94,9 +94,19 @@ public class Scanner
 
 		} else if(currentChar == '-'){
 			takeIt();
-			while( isDigit( currentChar ) )
+			if(isDigit( currentChar )){
+				while( isDigit( currentChar ) )
+					takeIt();
+				return Token.LITERAL_NUMBER;
+			}else if(currentChar == '>'){
 				takeIt();
-			return Token.LITERAL_NUMBER;
+				return Token.ASSIG_RIGHT;
+			}else {
+				System.out.println("Error: expected > after - to do the right assignment or a digit");
+				takeIt();
+				return Token.ERROR;
+			}
+
 		}
 		switch( currentChar ) {
             case '.':
@@ -162,26 +172,22 @@ public class Scanner
 			case ')':
 				takeIt();
 				return Token.RIGHTPARAN;
+			case '[':
+				takeIt();
+				return Token.LEFTBRA;
+			case ']':
+				takeIt();
+				return Token.RIGHTBRA;
 			case '<':
+			takeIt();
+			if(currentChar == '-'){
 				takeIt();
-				if(currentChar == '-'){
-					takeIt();
-					return Token.ASSIG_LEFT;
-				}else {
-					System.out.println("Error: expected - after < to do the left assignment");
-					takeIt();
-					return Token.ERROR;
-				}
-			case '-':
+				return Token.ASSIG_LEFT;
+			}else {
+				System.out.println("Error: expected - after < to do the left assignment");
 				takeIt();
-				if(currentChar == '>'){
-					takeIt();
-					return Token.ASSIG_RIGHT;
-				}else {
-					System.out.println("Error: expected > after - to do the right assignment");
-					takeIt();
-					return Token.ERROR;
-				}
+				return Token.ERROR;
+			}
 				
 			case SourceFile.EOT:
 				return Token.EOT;

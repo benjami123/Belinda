@@ -91,12 +91,14 @@ public class Token {
 	public static final byte SEMICOLON = 28;
 	public static final byte LEFTPARAN = 29;
 	public static final byte RIGHTPARAN = 30;
-	public static final byte COLON = 31;
-	public static final byte ASSIG_RIGHT = 32;
-	public static final byte ASSIG_LEFT = 33;
+	public static final byte LEFTBRA = 31;
+	public static final byte RIGHTBRA = 32;
+	public static final byte COLON = 33;
+	public static final byte ASSIG_RIGHT = 34;
+	public static final byte ASSIG_LEFT = 35;
 
-    public static final byte EOT = 34;
-    public static final byte ERROR = 35;
+    public static final byte EOT = 36;
+    public static final byte ERROR = 37;
 
 
 
@@ -133,6 +135,8 @@ public class Token {
 			";",
 			"(",
 			")",
+            "[",
+            "]",
 			":",
 			"->",
 			"<-",

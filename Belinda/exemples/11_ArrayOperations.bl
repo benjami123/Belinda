@@ -1,0 +1,10 @@
+programStart
+  declare start
+    I[] i, g, h;
+    C[5] c;
+  declareEnd
+  do
+    i[5;] <- 7 .+ g[6;];
+    8 .+ g[6;] -> h[9;];
+  doEnd
+programEnd

@@ -84,7 +84,26 @@ public class Parser
 						return null;
 				}
 				accept(Token.TYPE);
-				Collection<VarName> varList = parseVarList();
+                int size = 1;
+                if (currentTerminal.kind == Token.LEFTBRA){
+                    accept(Token.LEFTBRA);
+                    size = -1;
+                    if(currentTerminal.kind == Token.LITERAL_NUMBER){
+                        size = Integer.parseInt(currentTerminal.spelling);
+                        if (size < 2){
+                            System.out.println("Error: array dimenion must be at least 1");
+                            return null;
+                        }
+                        accept(Token.LITERAL_NUMBER);
+                    }
+                    accept(Token.SEMICOLON);
+                    accept(Token.RIGHTBRA);
+                    if(size == -1){
+                        size = 100;
+                    }
+                }
+
+				Collection<VarName> varList = parseVarList(size);
 				Collection<TypeVar> typeVars = new ArrayList<>();
                 for (VarName v : varList) {
                     if(v == null){
@@ -116,10 +135,10 @@ public class Parser
 		return declaration;
 	}
 
-	private Collection<VarName> parseVarList(){
+	private Collection<VarName> parseVarList(int size){
         Collection<VarName> varList = new ArrayList<>();
 		while(currentTerminal.kind != Token.SEMICOLON) {
-			varList.add(new VarName(currentTerminal.spelling));
+			varList.add(new VarName(currentTerminal.spelling, size));
 		    accept(Token.VARN_NAME);
 			if(currentTerminal.spelling.equals(",")){
 				accept(Token.COMMA);
@@ -210,7 +229,7 @@ public class Parser
 					modifier = new VarName(currentTerminal.spelling);
 					accept(Token.VARN_NAME);
 				}else if (currentTerminal.kind == Token.LITERAL_NUMBER){
-					modifier = new LiteralNumber(Integer.parseInt(currentTerminal.spelling));
+					modifier = new LiteralNumber(currentTerminal.spelling);
 					accept(Token.LITERAL_NUMBER);
 				}else{
 					System.out.println("Error: Number or variable name expected");
@@ -322,6 +341,7 @@ public class Parser
 				accept(Token.SEMICOLON);
 				command = giveBackWith;
 				break;
+            case Token.LITERAL_NUMBER:
 			case Token.VARN_NAME:
 				command = parseAssignmentOrFunctionCallAlone();
 				break;
@@ -389,13 +409,48 @@ public class Parser
 								break;
 						}
 						break;
+                    case Token.LEFTBRA:
+                        accept(Token.LEFTBRA);
+                        Expression arrayVslue = parseOperationOnRight();
+                        varName.addArrayValue(arrayVslue);
+                        accept(Token.SEMICOLON);
+                        accept(Token.RIGHTBRA);
+                        switch (currentTerminal.kind){
+                            case Token.ASSIG_RIGHT:
+                                expression = varName;
+                                assignmentOperator = new AssignmentOperator(currentTerminal.spelling);
+                                accept(Token.ASSIG_RIGHT);
+                                varName = new VarName(currentTerminal.spelling);
+                                accept(Token.VARN_NAME);
+                                addIndex(varName);
+                                break;
+                            case Token.OPERATOR:
+                                Operator opi = new Operator(currentTerminal.spelling);
+                                accept(Token.OPERATOR);
+                                expression = parseOperationOnLeft(varName, opi);
+                                assignmentOperator = new AssignmentOperator(currentTerminal.spelling);
+                                accept(Token.ASSIG_RIGHT);
+                                varName = new VarName(currentTerminal.spelling);
+                                accept(Token.VARN_NAME);
+                                addIndex(varName);
+                                break;
+                            case Token.ASSIG_LEFT:
+                                assignmentOperator = new AssignmentOperator(currentTerminal.spelling);
+                                accept(Token.ASSIG_LEFT);
+                                expression = parseOperationOnRight();
+                                break;
+                            default:
+                                System.out.println("Error expected operator or assignment");
+                                break;
+                        }
+                        break;
                     default:
                         System.out.println("Error expected LeftParan, operator or assignment");
                         break;
                 }
                 break;
             case Token.LITERAL_NUMBER:
-            	LiteralNumber litNum = new LiteralNumber(Integer.parseInt(currentTerminal.spelling));
+            	LiteralNumber litNum = new LiteralNumber(currentTerminal.spelling);
             	accept(Token.LITERAL_NUMBER);
 				switch(currentTerminal.kind){
 					case Token.OPERATOR:
@@ -413,6 +468,7 @@ public class Parser
 				accept(Token.ASSIG_RIGHT);
 				varName = new VarName(currentTerminal.spelling);
 				accept(Token.VARN_NAME);
+                addIndex(varName);
                 break;
             default:
                 System.out.println("Expected VAR NAME, LITERAL NUMBER or FUNCTION_CALL");
@@ -430,6 +486,16 @@ public class Parser
         return new Assignment(varName, assignmentOperator, expression);
     }
 
+    private void addIndex(VarName varName) {
+        if(currentTerminal.kind == Token.LEFTBRA){
+            accept(Token.LEFTBRA);
+            Expression arrayValue = parseOperationOnRight();
+            varName.addArrayValue(arrayValue);
+            accept(Token.SEMICOLON);
+            accept(Token.RIGHTBRA);
+        }
+    }
+
     private Expression parseOperationOnRight(){
 	    Operation current;
 	    Expression left;
@@ -444,6 +510,7 @@ public class Parser
             case Token.ASSIG_RIGHT:
             case Token.SEMICOLON:
             case Token.RIGHTPARAN:
+            case Token.RIGHTBRA:
                 return left;
             default:
                 System.out.println("Error, Operator, assignment right or semicolon expected");
@@ -477,7 +544,7 @@ public class Parser
 		Negation neg;
 		switch (currentTerminal.kind) {
 			case Token.LITERAL_NUMBER:
-				neg = new Negation(new LiteralNumber(Integer.parseInt(currentTerminal.spelling)));
+				neg = new Negation(new LiteralNumber(currentTerminal.spelling));
 				accept(Token.LITERAL_NUMBER);
 				break;
 			case Token.VARN_NAME:
@@ -500,10 +567,16 @@ public class Parser
 				accept(Token.VARN_NAME);
 				if(currentTerminal.spelling.equals("(")){
 					exp = parseFunctionCall(((VarName) exp).getVarValue());
-				}
+				}else if(currentTerminal.kind == Token.LEFTBRA){
+				    accept(Token.LEFTBRA);
+				    Expression valueArray = parseOperationOnRight();
+                    accept(Token.SEMICOLON);
+				    accept(Token.RIGHTBRA);
+				    ((VarName) exp).addArrayValue(valueArray);
+                }
 				break;
 			case Token.LITERAL_NUMBER:
-				exp = new LiteralNumber(Integer.parseInt(currentTerminal.spelling));
+				exp = new LiteralNumber(currentTerminal.spelling);
 				accept(Token.LITERAL_NUMBER);
 
 				break;
@@ -555,7 +628,7 @@ public class Parser
 					accept(Token.VARN_NAME);
 					break;
 				case Token.LITERAL_NUMBER:
-					arguments.add(new LiteralNumber(Integer.parseInt(currentTerminal.spelling)));
+					arguments.add(new LiteralNumber(currentTerminal.spelling));
 					accept(Token.LITERAL_NUMBER);
 					break;
 				default:
@@ -586,7 +659,7 @@ public class Parser
 				System.out.println("Case must be followed by a literal number");
 				return null;
 			}
-			values.add(new LiteralNumber(Integer.parseInt(currentTerminal.spelling)));
+			values.add(new LiteralNumber(currentTerminal.spelling));
 			accept(Token.LITERAL_NUMBER);
 		}
 		if(currentTerminal.kind == Token.DEFAULT){

@@ -1,0 +1,12 @@
+programStart
+  declare start
+    C[5] c;
+  declareEnd
+  do
+    c[0;] <- |H|;
+    c[1;] <- |e|;
+    c[2;] <- |l|;
+    c[3;] <- |l|;
+    c[4;] <- |o|;
+  doEnd
+programEnd
