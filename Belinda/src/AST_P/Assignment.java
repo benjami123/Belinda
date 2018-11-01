@@ -1,9 +1,9 @@
 package AST_P;
 
 public class Assignment extends AssignmentOrFunctionCallAlone {
-    VarName varName;
-    AssignmentOperator assignmentOperator;
-    Expression expression;
+    private VarName varName;
+    private AssignmentOperator assignmentOperator;
+    private Expression expression;
 
     public Assignment(VarName varName, AssignmentOperator assignmentOperator, Expression expression) {
         this.varName = varName;

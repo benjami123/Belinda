@@ -3,7 +3,7 @@ package AST_P;
 import java.util.*;
 
 public class TypeVars extends AST {
-    Collection<TypeVar> typeVars;
+    private Collection<TypeVar> typeVars;
 
     public TypeVars(Collection<TypeVar> typeVars) {
         this.typeVars = typeVars;
@@ -14,6 +14,9 @@ public class TypeVars extends AST {
         for (TypeVar tv : typeVars) {
             this.typeVars.add(tv);
         }
+    }
 
+    public Collection<TypeVar> getTypeVars() {
+        return typeVars;
     }
 }

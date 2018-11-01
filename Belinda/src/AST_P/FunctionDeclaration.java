@@ -12,4 +12,16 @@ public class FunctionDeclaration extends Declaration{
         this.typeVars = typeVars;
         this.block = block;
     }
+
+    public VarName getFuncName() {
+        return funcName;
+    }
+
+    public TypeVars getTypeVars() {
+        return typeVars;
+    }
+
+    public Block getBlock() {
+        return block;
+    }
 }

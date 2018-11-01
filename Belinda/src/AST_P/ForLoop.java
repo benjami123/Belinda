@@ -1,11 +1,11 @@
 package AST_P;
 
 public class ForLoop extends LoopBlock{
-    Assignment assignment;
-    Expression operation;
-    Operator operator;
-    Expression modifier;
-    Commands commands;
+    public Assignment assignment;
+    public Expression operation;
+    public Operator operator;
+    public Expression modifier;
+    public Commands commands;
 
     public ForLoop(Assignment assignment, Expression operation, Operator operator, Expression modifier, Commands commands) {
         this.assignment = assignment;

@@ -1,15 +1,19 @@
 package AST_P;
 
 public class Negation extends Expression {
-    VarName varName;
-    LiteralNumber literalNumber;
+    private Expression varNameOrLiteralNumber;
+
 
 
     public Negation(VarName varName) {
-        this.varName = varName;
+        this.varNameOrLiteralNumber = varName;
     }
 
     public Negation(LiteralNumber literalNumber) {
-        this.literalNumber = literalNumber;
+        this.varNameOrLiteralNumber = literalNumber;
+    }
+
+    public Expression getVarNameOrLiteralNumber() {
+        return varNameOrLiteralNumber;
     }
 }

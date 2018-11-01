@@ -21,6 +21,7 @@ public interface Visitor {
     public Object visitSwitchStatement(SwitchStatement switchStatement, Object arg);
     public Object visitType(Type type, Object arg);
     public Object visitTypeVar(TypeVar typeVar, Object arg);
+    public Object visitTypeVars(TypeVars typeVars, Object arg);
     public Object visitVarName(VarName varName, Object arg);
     public Object visitWhileLoop(WhileLoop whileLoop, Object arg);
 

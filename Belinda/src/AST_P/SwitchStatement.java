@@ -4,11 +4,19 @@ import java.util.*;
 
 
 public class SwitchStatement extends ConditionBlock {
-    VarName varName;
-    Collection<SwitchCase> switchCases;
+    private VarName varName;
+    private Collection<SwitchCase> switchCases;
 
     public SwitchStatement(VarName varName, Collection<SwitchCase> switchCases) {
         this.varName = varName;
         this.switchCases = switchCases;
+    }
+
+    public VarName getVarName() {
+        return varName;
+    }
+
+    public Collection<SwitchCase> getSwitchCases() {
+        return switchCases;
     }
 }
