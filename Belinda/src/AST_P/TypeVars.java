@@ -19,4 +19,8 @@ public class TypeVars extends AST {
     public Collection<TypeVar> getTypeVars() {
         return typeVars;
     }
+    @Override
+    public Object visit(Visitor v, Object arg) {
+        return v.visitTypeVars(this, arg);
+    }
 }

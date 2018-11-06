@@ -3,18 +3,19 @@ package AST_P;
 import java.util.*;
 
 public class Declarations extends AST {
-    public Collection<Declaration> declaration;
-    public Declarations() {
-    }
+    private Collection<Declaration> declaration;
 
-    public Declarations(Declaration... declarations ) {
-        this.declaration = new ArrayList<>();
-        for (Declaration d : declarations) {
-            this.declaration.add(d);
-        }
-    }
 
     public Declarations(Collection<Declaration> declaration) {
         this.declaration = declaration;
+    }
+
+    public Collection<Declaration> getDeclaration() {
+        return declaration;
+    }
+
+    @Override
+    public Object visit(Visitor v, Object arg) {
+        return v.visitDeclarations(this, arg);
     }
 }

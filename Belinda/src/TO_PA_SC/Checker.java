@@ -2,6 +2,8 @@ package TO_PA_SC;
 
 import AST_P.*;
 
+import java.util.ArrayList;
+
 public class Checker implements Visitor {
 
     private IdentificationTable table = new IdentificationTable();
@@ -20,6 +22,19 @@ public class Checker implements Visitor {
     }
 
     @Override
+    public Object visitAssignment(Assignment assignment, Object arg) {
+        assignment.getVarName().visit(this, assignment);
+        assignment.getAssignmentOperator().visit(this, null);
+        assignment.getExpression().visit(this, assignment);
+        return null;
+    }
+
+    @Override
+    public Object visitAssignmentOperator(AssignmentOperator assignmentOperator, Object arg) {
+        return assignmentOperator.getValue();
+    }
+
+    @Override
     public Object visitBlock(Block block, Object arg) {
         block.getDeclarations().visit(this, null);
         block.getCommands().visit(this, null);
@@ -28,7 +43,7 @@ public class Checker implements Visitor {
 
     @Override
     public Object visitDeclarations(Declarations declarations, Object arg) {
-        for (Declaration dec : declarations.declaration) {
+        for (Declaration dec : declarations.getDeclaration()) {
             dec.visit(this, null);
         }
         return null;
@@ -36,7 +51,7 @@ public class Checker implements Visitor {
 
     @Override
     public Object visitCommands(Commands commands, Object arg) {
-        for (Command com : commands.commands) {
+        for (Command com : commands.getCommands()) {
             com.visit(this, null);
         }
         return null;
@@ -44,43 +59,42 @@ public class Checker implements Visitor {
 
     @Override
     public Object visitEnd(End end, Object arg) {
-        end.visit(this, null);
         return null;
     }
 
     @Override
     public Object visitForLoop(ForLoop forLoop, Object arg) {
-        forLoop.assignment.visit(this, null);
-        forLoop.operation.visit(this, null);
-        forLoop.operator.visit(this, null);
-        forLoop.operator.visit(this, null);
-        forLoop.commands.visit(this, null);
+        forLoop.getAssignment().visit(this, null);
+        forLoop.getOperation().visit(this, null);
+        forLoop.getOperator().visit(this, null);
+        forLoop.getModifier().visit(this, null);
+        forLoop.getCommands().visit(this, null);
         return null;
     }
 
     @Override
     public Object visitFunctionCall(FunctionCall functionCall, Object arg) {
-        functionCall.getFuncName().visit(this, null);
+        functionCall.getFuncName().visit(this, functionCall);
         for (Expression exp: functionCall.getArguments()) {
-            exp.visit(this, null);
+            exp.visit(this, exp);
         }
         return null;
     }
 
     @Override
     public Object visitFunctionCallAlone(FunctionCallAlone functionCallAlone, Object arg) {
-        functionCallAlone.getFuncName().visit(this, null);
+        functionCallAlone.getFuncName().visit(this, functionCallAlone);
         for (Expression exp: functionCallAlone.getArguments()) {
-            exp.visit(this, null);
+            exp.visit(this, exp);
         }
         return null;
     }
 
     @Override
     public Object visitFunctionDeclaration(FunctionDeclaration functionDeclaration, Object arg) {
-        functionDeclaration.getFuncName().visit(this, null);
+        functionDeclaration.getFuncName().visit(this, functionDeclaration);
         table.openScope();
-        functionDeclaration.getTypeVars().visit(this, null);
+        functionDeclaration.getTypeVars().visit(this, functionDeclaration.getTypeVars());
         functionDeclaration.getBlock().visit(this, null);
         table.closeScope();
         return null;
@@ -88,7 +102,7 @@ public class Checker implements Visitor {
 
     @Override
     public Object visitGiveBackWith(GiveBackWith giveBackWith, Object arg) {
-        giveBackWith.getExpression().visit(this, null);
+        giveBackWith.getExpression().visit(this, giveBackWith);
         return null;
     }
 
@@ -107,40 +121,52 @@ public class Checker implements Visitor {
 
     @Override
     public Object visitInitializationTo0(InitializationTo0 initializationTo0, Object arg) {
-        initializationTo0.getTypeVars().visit(this, null);
+        initializationTo0.getTypeVars().visit(this, initializationTo0);
         return null;
     }
 
     @Override
     public Object visitLiteralNumber(LiteralNumber literalNumber, Object arg) {
-        //TODO: implement
+        String value = literalNumber.getsValue();
+        int i;
+        try{
+            i = Integer.parseInt(value);
+        }catch (Exception exep){
+            if(value.length() != 3){
+                System.out.println("Error: syntax error ->" + value + " impossible to convert into an integer");
+            }
+            char[] letter = value.toCharArray();
+            i = letter[1];
+        }
+        literalNumber.setiValue(i);
         return null;
     }
 
     @Override
     public Object visistNegation(Negation negation, Object arg) {
-        negation.getVarNameOrLiteralNumber().visit(this, null);
+        negation.getVarNameOrLiteralNumber().visit(this, negation);
         return null;
     }
 
     @Override
     public Object visistOperation(Operation operation, Object arg) {
-        operation.getLeft().visit(this, null);
+        operation.getLeft().visit(this, operation);
         operation.getOperator().visit(this, null);
-        operation.getRight().visit(this, null);
+        operation.getRight().visit(this, operation);
         return null;
     }
 
     @Override
     public Object visitOperator(Operator operator, Object arg) {
-        //TODO: implement
         return null;
     }
 
     @Override
     public Object visitSwitchCase(SwitchCase switchCase, Object arg) {
-        for (LiteralNumber ln : switchCase.getLiteralNumbers()) {
-            ln.visit(this, null);
+        if(switchCase.getLiteralNumbers() != null){
+            for (LiteralNumber ln : switchCase.getLiteralNumbers()) {
+                ln.visit(this, null);
+            }
         }
         switchCase.getCommands().visit(this, null);
         switchCase.getEnd().visit(this, null);
@@ -149,7 +175,7 @@ public class Checker implements Visitor {
 
     @Override
     public Object visitSwitchStatement(SwitchStatement switchStatement, Object arg) {
-        switchStatement.getVarName().visit(this, null);
+        switchStatement.getVarName().visit(this, switchStatement);
         for (SwitchCase sc: switchStatement.getSwitchCases()) {
             sc.visit(this, null);
         }
@@ -158,26 +184,98 @@ public class Checker implements Visitor {
 
     @Override
     public Object visitType(Type type, Object arg) {
-        //TOdo: implement
         return null;
     }
 
     @Override
     public Object visitTypeVar(TypeVar typeVar, Object arg) {
         typeVar.getType().visit(this, null);
-        typeVar.getVarName().visit(this, null);
+        typeVar.getVarName().visit(this, arg);
         return null;
     }
     public Object visitTypeVars(TypeVars typeVars, Object arg){
         for (TypeVar tp :typeVars.getTypeVars()) {
-            tp.visit(this, null);
+            tp.visit(this, arg);
         }
         return null;
     }
 
     @Override
     public Object visitVarName(VarName varName, Object arg) {
-        //TOdo: implement
+        if(arg instanceof InitializationTo0 ){
+            //just getting the type from the firt TypeVar inside the colelction of TypeVars inside the object TypeVars inside the
+            //InitializationTo0 object arg
+            Type t = ((ArrayList<TypeVar>)(((InitializationTo0) arg).getTypeVars()).getTypeVars()).get(0).getType();
+            TypeVar tp = new TypeVar(t, varName);
+            table.enter(varName.getVarValue(), tp);
+        }else if(arg instanceof TypeVars){
+            Type t = ((ArrayList<TypeVar>)((TypeVars) arg).getTypeVars()).get(0).getType();
+            TypeVar tp = new TypeVar(t, varName);
+            table.enter(varName.getVarValue(), tp);
+        }else if (arg instanceof FunctionDeclaration) {
+            table.enter(varName.getVarValue(), varName);
+        }else if(arg instanceof Assignment){
+            if(varName.isFunction()){
+                System.out.println("Error: "+ varName.getVarValue() + "is a function, cannot be assigned");
+                return null;
+            }
+            if(!table.isDeclared(varName.getVarValue())){
+                System.out.println("Error: " + varName.getVarValue() + " is not declared");
+                return null;
+            }
+        }else if(arg instanceof Operation || arg instanceof VarName){
+            if(varName.isFunction()){
+                System.out.println("Error:" + varName.getVarValue() + " is a function: must be called like: " + varName.getVarValue() + "(arg, arg2)");
+                return null;
+            }
+            if(!table.isDeclared(varName.getVarValue())){
+                System.out.println("Error: " + varName.getVarValue() + " is not declared");
+                return null;
+            }
+        }else if(arg instanceof FunctionCallAlone || arg instanceof FunctionCall){
+            if(!varName.isFunction()){
+                System.out.println("Error: " + varName.getVarValue() + " is not a function, cannot be called");
+                return null;
+            }
+            if(!table.isDeclared(varName.getVarValue())){
+                System.out.println("Error: " + varName.getVarValue() + " is not declared");
+                return null;
+            }
+        }else if(arg instanceof Negation){
+            if(varName.isFunction()){
+                System.out.println("Error:" + varName.getVarValue() + " is a function. The argument of a negation must be a var name");
+                return null;
+            }
+            if(!table.isDeclared(varName.getVarValue())){
+                System.out.println("Error: " + varName.getVarValue() + " is not declared");
+                return null;
+            }
+        }else if(arg instanceof GiveBackWith){
+            if(!table.isDeclared(varName.getVarValue())){
+                System.out.println("Error: " + varName.getVarValue() + " is not declared");
+                return null;
+            }
+        }else if(arg instanceof SwitchStatement){
+            if(varName.isFunction()){
+                System.out.println("Error:" + varName.getVarValue() + " is a function. It should be a var name");
+                return null;
+            }
+            if(!table.isDeclared(varName.getVarValue())){
+                System.out.println("Error: " + varName.getVarValue() + " is not declared");
+                return null;
+            }
+        }else if(arg instanceof Expression){
+            if(varName.isFunction()){
+                System.out.println("Error:" + varName.getVarValue() + " is a function. It shouldn't (?)");
+                return null;
+            }
+            if(!table.isDeclared(varName.getVarValue())){
+                System.out.println("Error: " + varName.getVarValue() + " is not declared");
+                return null;
+            }
+        }else {
+            System.out.println("Error: arg: " + arg.toString());
+        }
         return null;
     }
 

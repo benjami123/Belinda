@@ -19,4 +19,8 @@ public class SwitchStatement extends ConditionBlock {
     public Collection<SwitchCase> getSwitchCases() {
         return switchCases;
     }
+    @Override
+    public Object visit(Visitor v, Object arg) {
+        return v.visitSwitchStatement(this, arg);
+    }
 }

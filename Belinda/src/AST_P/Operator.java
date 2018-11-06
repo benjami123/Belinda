@@ -6,4 +6,8 @@ public class Operator extends AST {
     public Operator(String spelling) {
         this.spelling = spelling;
     }
+    @Override
+    public Object visit(Visitor v, Object arg) {
+        return v.visitOperator(this, arg);
+    }
 }

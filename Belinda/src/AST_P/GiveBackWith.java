@@ -10,4 +10,8 @@ public class GiveBackWith extends Command {
     public Expression getExpression() {
         return expression;
     }
+    @Override
+    public Object visit(Visitor v, Object arg) {
+        return v.visitGiveBackWith(this, arg);
+    }
 }

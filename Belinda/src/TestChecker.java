@@ -10,6 +10,8 @@
 
 
 import AST_P.AST;
+import AST_P.Program;
+import TO_PA_SC.Checker;
 import TO_PA_SC.Parser;
 import TO_PA_SC.Scanner;
 import TO_PA_SC.SourceFile;
@@ -17,9 +19,9 @@ import TO_PA_SC.SourceFile;
 import javax.swing.*;
 
 
-public class TestDriverParser
+public class TestChecker
 {
-	private static final String EXAMPLES_DIR = "exemples/prog1.txt";
+	private static final String EXAMPLES_DIR = "exemples/01_Prog1.bl";
 	
 	
 	public static void main( String args[] )
@@ -34,6 +36,7 @@ public class TestDriverParser
 			programTree = p.parseProgram();
 		}
 		System.out.println(programTree);
-		System.out.println("fin");
+		Checker c = new Checker();
+		c.check((Program) programTree);
 	}
 }
