@@ -3,9 +3,9 @@ package AST_P;
 import java.util.*;
 
 public class FunctionCall extends Expression {
-    VarName funcName;
-    Collection<Expression> arguments;
-    int numberOfArg;
+    private VarName funcName;
+    private Collection<Expression> arguments;
+    private int numberOfArg;
 
     public FunctionCall(VarName funcName, Collection<Expression> arguments) {
         this.funcName = funcName;
@@ -29,5 +29,11 @@ public class FunctionCall extends Expression {
 
     public int getNumberOfArg() {
         return numberOfArg;
+    }
+
+
+    @Override
+    public Object visit(Visitor v, Object arg) {
+        return v.visitFunctionCall(this, arg);
     }
 }

@@ -1,6 +1,9 @@
 package TO_PA_SC;
 
+import AST_P.Type;
 import AST_P.TypeVar;
+import AST_P.VarName;
+
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,12 +19,24 @@ public class IdentificationTable {
     }
 
     public void enter(String id, TypeVar tp){
+        if(Token.isKeyWord(id)){
+            System.out.println( id + " is a keyword, cannote be used as function name or variable name" );
+        }
         IdEntry entry = find( id );
         if( entry != null && entry.level == level ){
             System.out.println( id + " declared twice" );
         }
         else{
             idEntries.add(new IdEntry(level, id, tp));
+        }
+    }
+    public void enter(String id, VarName varName){
+        IdEntry entry = find( id );
+        if( entry != null && entry.level == level ){
+            System.out.println( id + " declared twice" );
+        }
+        else{
+            idEntries.add(new IdEntry(level, id, new TypeVar(new Type("F"), varName)));
         }
 
     }
@@ -57,5 +72,8 @@ public class IdentificationTable {
         return null;
     }
 
+    public boolean isDeclared(String id){
+        return find(id) != null;
+    }
 
 }

@@ -30,4 +30,9 @@ public class FunctionCallAlone extends AssignmentOrFunctionCallAlone {
     public int getNumberOfArg() {
         return numberOfArg;
     }
+
+    @Override
+    public Object visit(Visitor v, Object arg) {
+        return v.visitFunctionCallAlone(this, arg);
+    }
 }

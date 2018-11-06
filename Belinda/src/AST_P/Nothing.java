@@ -1,8 +1,8 @@
 package AST_P;
 
-public class End extends Command {
+public class Nothing extends Expression {
     @Override
     public Object visit(Visitor v, Object arg) {
-        return v.visitEnd(this, arg);
+        return null;
     }
 }

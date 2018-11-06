@@ -16,4 +16,9 @@ public class Block extends AST {
     public Commands getCommands() {
         return commands;
     }
+
+    @Override
+    public Object visit(Visitor v, Object arg) {
+        return v.visitBlock(this, arg);
+    }
 }

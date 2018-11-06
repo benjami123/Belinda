@@ -24,4 +24,8 @@ public class Operation extends Expression {
     public Expression getRight() {
         return right;
     }
+    @Override
+    public Object visit(Visitor v, Object arg) {
+        return v.visistOperation(this, arg);
+    }
 }

@@ -334,7 +334,7 @@ public class Parser
 				accept(Token.GIVEBACKWITH);
 				if(currentTerminal.kind == Token.NOTHING){
 					accept(Token.NOTHING);
-					giveBackWith = new GiveBackWith(null);
+					giveBackWith = new GiveBackWith(new Nothing());
 				}else {
 					giveBackWith = new GiveBackWith(parseOperationOnRight());
 				}

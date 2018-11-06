@@ -31,4 +31,8 @@ public class IfStatement extends ConditionBlock {
     public Collection<Commands> getOtherCommands() {
         return otherCommands;
     }
+    @Override
+    public Object visit(Visitor v, Object arg) {
+        return v.visitIfStatement(this, arg);
+    }
 }

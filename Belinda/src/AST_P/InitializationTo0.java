@@ -10,4 +10,8 @@ public class InitializationTo0  extends Declaration{
     public TypeVars getTypeVars() {
         return typeVars;
     }
+    @Override
+    public Object visit(Visitor v, Object arg) {
+        return v.visitInitializationTo0(this, arg);
+    }
 }

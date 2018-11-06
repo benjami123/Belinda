@@ -16,4 +16,8 @@ public class Negation extends Expression {
     public Expression getVarNameOrLiteralNumber() {
         return varNameOrLiteralNumber;
     }
+    @Override
+    public Object visit(Visitor v, Object arg) {
+        return v.visistNegation(this, arg);
+    }
 }

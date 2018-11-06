@@ -16,4 +16,8 @@ public class TypeVar extends AST {
     public VarName getVarName() {
         return varName;
     }
+    @Override
+    public Object visit(Visitor v, Object arg) {
+        return v.visitTypeVar(this, arg);
+    }
 }

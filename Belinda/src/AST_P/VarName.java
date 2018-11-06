@@ -27,4 +27,11 @@ public class VarName extends Expression {
     public void addArrayValue(Expression expression){
         arrayValue = expression;
     }
+    public boolean isFunction(){
+        return isFunction;
+    }
+    @Override
+    public Object visit(Visitor v, Object arg) {
+        return v.visitVarName(this, arg);
+    }
 }

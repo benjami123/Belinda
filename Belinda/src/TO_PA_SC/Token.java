@@ -168,6 +168,16 @@ public class Token {
 
 	public static final char TYPES[] = {
 			'C',
-			'I'
+			'I',
+			'F'
 	};
+
+	public static boolean isKeyWord(String string){
+		for (String s: SPELLINGS) {
+			if(s.equals(string)){
+				return true;
+			}
+		}
+		return false;
+	}
 }

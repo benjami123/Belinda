@@ -30,4 +30,9 @@ public class SwitchCase extends AST {
     public boolean isDefault(){
         return (literalNumbers == null);
     }
+
+    @Override
+    public Object visit(Visitor v, Object arg) {
+        return v.visitSwitchCase(this, arg);
+    }
 }

@@ -2,6 +2,8 @@ package AST_P;
 
 public interface Visitor {
     public Object visitProgram(Program program, Object arg);
+    public Object visitAssignment(Assignment assignment, Object arg);
+    public Object visitAssignmentOperator(AssignmentOperator assignmentOperator, Object arg);
     public Object visitBlock(Block block, Object arg);
     public Object visitDeclarations(Declarations declarations, Object arg);
     public Object visitCommands(Commands commands, Object arg);
