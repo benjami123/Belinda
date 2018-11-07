@@ -23,9 +23,19 @@ public class Checker implements Visitor {
 
     @Override
     public Object visitAssignment(Assignment assignment, Object arg) {
-        assignment.getVarName().visit(this, assignment);
+        Expression destination = assignment.getVarName();
+        destination.visit(this, assignment);
         assignment.getAssignmentOperator().visit(this, null);
-        assignment.getExpression().visit(this, assignment);
+        Expression expression = assignment.getExpression();
+        expression.visit(this, assignment);
+        if(destination instanceof VarName){
+            ((VarName) destination).setArrayValue(expression);
+        }else if(destination instanceof ArrayEntry){
+            ((ArrayEntry) destination).setValue(expression);
+        }else {
+            System.out.println("Error: checker-- Assignment");
+            System.exit(1);
+        }
         return null;
     }
 
@@ -283,6 +293,20 @@ public class Checker implements Visitor {
     public Object visitWhileLoop(WhileLoop whileLoop, Object arg) {
         whileLoop.getOperation().visit(this, null);
         whileLoop.getCommands().visit(this, null);
+        return null;
+    }
+
+    @Override
+    public Object visitArrayEntry(ArrayEntry arrayEntry, Object arg) {
+        String id = arrayEntry.getFather().getVarValue();
+        if(table.isDeclared(id)) {
+            VarName realFather = table.retrive(id).getVarName();
+            arrayEntry.setFather(realFather);
+            realFather.addArrayEntry(arrayEntry);
+        }else{
+            System.out.println("Error: " + id + " not declared");
+            System.exit(1);
+        }
         return null;
     }
 }

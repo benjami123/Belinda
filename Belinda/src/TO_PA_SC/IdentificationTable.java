@@ -41,7 +41,7 @@ public class IdentificationTable {
 
     }
 
-    private TypeVar retrive(String id){
+    public TypeVar retrive(String id){
         IdEntry temp = find(id);
         if(temp != null){
             return temp.attr;
