@@ -135,7 +135,7 @@ public class Parser
 		return declaration;
 	}
 
-	private Collection<VarName> parseVarList(int size){
+	private Collection<VarName> parseVarList(int size){ //size of the array/value
         Collection<VarName> varList = new ArrayList<>();
 		while(currentTerminal.kind != Token.SEMICOLON) {
 			varList.add(new VarName(currentTerminal.spelling, size));
@@ -354,7 +354,8 @@ public class Parser
 	}
 
     private AssignmentOrFunctionCallAlone parseAssignmentOrFunctionCallAlone(){
-	    VarName varName = null;
+	    Expression varName = null;
+	    Boolean isVarNameAnArrayEntry = false;
 	    AssignmentOperator assignmentOperator = null;
 	    Expression expression = null;
         switch(currentTerminal.kind){
@@ -383,7 +384,7 @@ public class Parser
                         accept(Token.VARN_NAME);
                         break;
 					case Token.LEFTPARAN:
-						Expression tempFunc = parseFunctionCall(varName.getVarValue());
+						Expression tempFunc = parseFunctionCall(((VarName)varName).getVarValue());
 						switch (currentTerminal.kind){
 							case Token.ASSIG_RIGHT:
 								expression = tempFunc;
@@ -411,32 +412,33 @@ public class Parser
 						break;
                     case Token.LEFTBRA:
                         accept(Token.LEFTBRA);
-                        Expression arrayVslue = parseOperationOnRight();
-                        varName.addArrayValue(arrayVslue);
+                        Expression arrayIndex = parseOperationOnRight();
                         accept(Token.SEMICOLON);
                         accept(Token.RIGHTBRA);
                         switch (currentTerminal.kind){
                             case Token.ASSIG_RIGHT:
-                                expression = varName;
+                                expression = new ArrayEntry((VarName) varName, arrayIndex,null);//the null means that the array entry is already created
                                 assignmentOperator = new AssignmentOperator(currentTerminal.spelling);
                                 accept(Token.ASSIG_RIGHT);
                                 varName = new VarName(currentTerminal.spelling);
                                 accept(Token.VARN_NAME);
-                                addIndex(varName);
+                                varName = createArrayEntryOrVarName((VarName)varName);
                                 break;
                             case Token.OPERATOR:
                                 Operator opi = new Operator(currentTerminal.spelling);
                                 accept(Token.OPERATOR);
-                                expression = parseOperationOnLeft(varName, opi);
+                                expression = parseOperationOnLeft(new ArrayEntry((VarName) varName, arrayIndex,null), opi);//the null means that the array entry is already created
                                 assignmentOperator = new AssignmentOperator(currentTerminal.spelling);
                                 accept(Token.ASSIG_RIGHT);
                                 varName = new VarName(currentTerminal.spelling);
                                 accept(Token.VARN_NAME);
-                                addIndex(varName);
+                                varName = createArrayEntryOrVarName((VarName) varName);
                                 break;
                             case Token.ASSIG_LEFT:
                                 assignmentOperator = new AssignmentOperator(currentTerminal.spelling);
                                 accept(Token.ASSIG_LEFT);
+                                varName = new ArrayEntry((VarName) varName, arrayIndex, null);
+                                isVarNameAnArrayEntry = true;
                                 expression = parseOperationOnRight();
                                 break;
                             default:
@@ -468,7 +470,6 @@ public class Parser
 				accept(Token.ASSIG_RIGHT);
 				varName = new VarName(currentTerminal.spelling);
 				accept(Token.VARN_NAME);
-                addIndex(varName);
                 break;
             default:
                 System.out.println("Expected VAR NAME, LITERAL NUMBER or FUNCTION_CALL");
@@ -483,17 +484,27 @@ public class Parser
         if(assignmentOperator == null){
         	return new FunctionCallAlone(((FunctionCall) expression).getFuncName(),((FunctionCall) expression).getArguments());
 		}
-        return new Assignment(varName, assignmentOperator, expression);
+        if(varName instanceof ArrayEntry){
+			return new Assignment((ArrayEntry) varName, assignmentOperator, expression);
+		}else if(varName instanceof VarName){
+			return new Assignment((VarName) varName, assignmentOperator, expression);
+		}else {
+        	System.out.println("Error: can only assign to varName or arrayEntry");
+        	return null;
+		}
     }
 
-    private void addIndex(VarName varName) {
+    private Expression createArrayEntryOrVarName(VarName varName) {
         if(currentTerminal.kind == Token.LEFTBRA){
             accept(Token.LEFTBRA);
-            Expression arrayValue = parseOperationOnRight();
-            varName.addArrayValue(arrayValue);
+            Expression index = parseOperationOnRight();
             accept(Token.SEMICOLON);
             accept(Token.RIGHTBRA);
-        }
+            return new ArrayEntry(varName, index, null);
+        }else {
+        	return varName;
+		}
+
     }
 
     private Expression parseOperationOnRight(){
@@ -565,14 +576,14 @@ public class Parser
 			case Token.VARN_NAME:
 				exp = new VarName(currentTerminal.spelling);
 				accept(Token.VARN_NAME);
-				if(currentTerminal.spelling.equals("(")){
+				if(currentTerminal.kind == Token.LEFTPARAN){
 					exp = parseFunctionCall(((VarName) exp).getVarValue());
 				}else if(currentTerminal.kind == Token.LEFTBRA){
 				    accept(Token.LEFTBRA);
-				    Expression valueArray = parseOperationOnRight();
+				    Expression index = parseOperationOnRight();
                     accept(Token.SEMICOLON);
 				    accept(Token.RIGHTBRA);
-				    ((VarName) exp).addArrayValue(valueArray);
+				    exp = new ArrayEntry((VarName) exp, index, null);
                 }
 				break;
 			case Token.LITERAL_NUMBER:

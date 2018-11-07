@@ -26,19 +26,5 @@ public interface Visitor {
     public Object visitTypeVars(TypeVars typeVars, Object arg);
     public Object visitVarName(VarName varName, Object arg);
     public Object visitWhileLoop(WhileLoop whileLoop, Object arg);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public Object visitArrayEntry(ArrayEntry arrayEntry, Object arg);
 }
