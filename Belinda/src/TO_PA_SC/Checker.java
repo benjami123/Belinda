@@ -144,6 +144,7 @@ public class Checker implements Visitor {
         }catch (Exception exep){
             if(value.length() != 3){
                 System.out.println("Error: syntax error ->" + value + " impossible to convert into an integer");
+                System.exit(1);
             }
             char[] letter = value.toCharArray();
             i = letter[1];
@@ -227,64 +228,78 @@ public class Checker implements Visitor {
         }else if(arg instanceof Assignment){
             if(varName.isFunction()){
                 System.out.println("Error: "+ varName.getVarValue() + "is a function, cannot be assigned");
+                System.exit(1);
                 return null;
             }
             if(!table.isDeclared(varName.getVarValue())){
                 System.out.println("Error: " + varName.getVarValue() + " is not declared");
+                System.exit(1);
                 return null;
             }
         }else if(arg instanceof Operation || arg instanceof VarName){
             if(varName.isFunction()){
                 System.out.println("Error:" + varName.getVarValue() + " is a function: must be called like: " + varName.getVarValue() + "(arg, arg2)");
+                System.exit(1);
                 return null;
             }
             if(!table.isDeclared(varName.getVarValue())){
                 System.out.println("Error: " + varName.getVarValue() + " is not declared");
+                System.exit(1);
                 return null;
             }
         }else if(arg instanceof FunctionCallAlone || arg instanceof FunctionCall){
             if(!varName.isFunction()){
                 System.out.println("Error: " + varName.getVarValue() + " is not a function, cannot be called");
+                System.exit(1);
                 return null;
             }
             if(!table.isDeclared(varName.getVarValue())){
                 System.out.println("Error: " + varName.getVarValue() + " is not declared");
+                System.exit(1);
                 return null;
             }
         }else if(arg instanceof Negation){
             if(varName.isFunction()){
                 System.out.println("Error:" + varName.getVarValue() + " is a function. The argument of a negation must be a var name");
+                System.exit(1);
                 return null;
             }
             if(!table.isDeclared(varName.getVarValue())){
                 System.out.println("Error: " + varName.getVarValue() + " is not declared");
+                System.exit(1);
                 return null;
             }
         }else if(arg instanceof GiveBackWith){
             if(!table.isDeclared(varName.getVarValue())){
                 System.out.println("Error: " + varName.getVarValue() + " is not declared");
+                System.exit(1);
                 return null;
             }
         }else if(arg instanceof SwitchStatement){
             if(varName.isFunction()){
                 System.out.println("Error:" + varName.getVarValue() + " is a function. It should be a var name");
+                System.exit(1);
                 return null;
             }
             if(!table.isDeclared(varName.getVarValue())){
                 System.out.println("Error: " + varName.getVarValue() + " is not declared");
+                System.exit(1);
                 return null;
             }
         }else if(arg instanceof Expression){
             if(varName.isFunction()){
                 System.out.println("Error:" + varName.getVarValue() + " is a function. It shouldn't (?)");
+                System.exit(1);
                 return null;
             }
             if(!table.isDeclared(varName.getVarValue())){
                 System.out.println("Error: " + varName.getVarValue() + " is not declared");
+                System.exit(1);
                 return null;
             }
         }else {
             System.out.println("Error: arg: " + arg.toString());
+            System.exit(1);
         }
         return null;
     }

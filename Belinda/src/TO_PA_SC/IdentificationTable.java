@@ -6,9 +6,6 @@ import AST_P.VarName;
 
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 
 public class IdentificationTable {
     private ArrayList<IdEntry> idEntries = new ArrayList<>();
@@ -21,10 +18,12 @@ public class IdentificationTable {
     public void enter(String id, TypeVar tp){
         if(Token.isKeyWord(id)){
             System.out.println( id + " is a keyword, cannote be used as function name or variable name" );
+            System.exit(1);
         }
         IdEntry entry = find( id );
         if( entry != null && entry.level == level ){
             System.out.println( id + " declared twice" );
+            System.exit(1);
         }
         else{
             idEntries.add(new IdEntry(level, id, tp));
@@ -34,6 +33,7 @@ public class IdentificationTable {
         IdEntry entry = find( id );
         if( entry != null && entry.level == level ){
             System.out.println( id + " declared twice" );
+            System.exit(1);
         }
         else{
             idEntries.add(new IdEntry(level, id, new TypeVar(new Type("F"), varName)));
