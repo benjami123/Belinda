@@ -12,8 +12,8 @@ import java.io.*;
 
 public class SourceFile
 {
-	public static final char EOL = '\n';
-	public static final char EOT = 0;
+	static final char EOL = '\n';
+	static final char EOT = 0;
 	
 	
 	private FileInputStream source;
@@ -31,7 +31,7 @@ public class SourceFile
 	}
 	
 	
-	public char getSource()
+	char getSource()
 	{
 		try {
 			int c = source.read();

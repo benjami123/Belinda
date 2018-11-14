@@ -1,0 +1,10 @@
+programStart
+  declare start
+    I i, g, h;
+
+  declareEnd
+  do
+    b .+ 9 -> h;
+
+  doEnd
+programEnd

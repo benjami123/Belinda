@@ -199,14 +199,14 @@ public class Scanner
 	}
 	
 	
-	public Token scan()
+	Token scan()
 	{
 		while( currentChar == '!' || currentChar == '\n' ||
 		       currentChar == '\r' || currentChar == '\t' ||
 		       currentChar == ' ' )
 			scanSeparator();
 			
-		currentSpelling = new StringBuffer( "" );
+		currentSpelling = new StringBuffer();
 		byte kind = scanToken();
 		
 		return new Token( kind, new String( currentSpelling ) );

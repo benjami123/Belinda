@@ -1,0 +1,19 @@
+programStart
+  declare start
+    I i, g, h;
+    funName (I ii )
+        declare start
+        declareEnd
+        do
+            giveBackWith ii;
+        doEnd;
+    funName (I ii )
+        declare start
+        declareEnd
+        do
+            giveBackWith ii;
+        doEnd;
+  declareEnd
+  do
+  doEnd
+programEnd

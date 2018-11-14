@@ -355,7 +355,6 @@ public class Parser
 
     private AssignmentOrFunctionCallAlone parseAssignmentOrFunctionCallAlone(){
 	    Expression varName = null;
-	    Boolean isVarNameAnArrayEntry = false;
 	    AssignmentOperator assignmentOperator = null;
 	    Expression expression = null;
         switch(currentTerminal.kind){
@@ -367,6 +366,7 @@ public class Parser
                         Operator op = new Operator(currentTerminal.spelling);
                         accept(Token.OPERATOR);
                         expression = parseOperationOnLeft(varName, op);
+                        assignmentOperator = new AssignmentOperator(currentTerminal.spelling);
                         accept(Token.ASSIG_RIGHT);
                         varName = new VarName(currentTerminal.spelling);
                         accept(Token.VARN_NAME);
@@ -438,7 +438,6 @@ public class Parser
                                 assignmentOperator = new AssignmentOperator(currentTerminal.spelling);
                                 accept(Token.ASSIG_LEFT);
                                 varName = new ArrayEntry((VarName) varName, arrayIndex, null);
-                                isVarNameAnArrayEntry = true;
                                 expression = parseOperationOnRight();
                                 break;
                             default:
@@ -470,6 +469,7 @@ public class Parser
 				accept(Token.ASSIG_RIGHT);
 				varName = new VarName(currentTerminal.spelling);
 				accept(Token.VARN_NAME);
+				varName= createArrayEntryOrVarName((VarName) varName);
                 break;
             default:
                 System.out.println("Expected VAR NAME, LITERAL NUMBER or FUNCTION_CALL");

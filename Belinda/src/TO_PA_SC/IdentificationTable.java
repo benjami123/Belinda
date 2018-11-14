@@ -7,15 +7,15 @@ import AST_P.VarName;
 
 import java.util.ArrayList;
 
-public class IdentificationTable {
+class IdentificationTable {
     private ArrayList<IdEntry> idEntries = new ArrayList<>();
     private int level = 0;
 
-    public IdentificationTable()
+    IdentificationTable()
     {
     }
 
-    public void enter(String id, TypeVar tp){
+    void enter(String id, TypeVar tp){
         if(Token.isKeyWord(id)){
             System.out.println( id + " is a keyword, cannote be used as function name or variable name" );
             System.exit(1);
@@ -29,7 +29,7 @@ public class IdentificationTable {
             idEntries.add(new IdEntry(level, id, tp));
         }
     }
-    public void enter(String id, VarName varName){
+    void enter(String id, VarName varName){
         IdEntry entry = find( id );
         if( entry != null && entry.level == level ){
             System.out.println( id + " declared twice" );
@@ -41,7 +41,7 @@ public class IdentificationTable {
 
     }
 
-    public TypeVar retrive(String id){
+    TypeVar retrive(String id){
         IdEntry temp = find(id);
         if(temp != null){
             return temp.attr;
@@ -50,11 +50,11 @@ public class IdentificationTable {
         }
     }
 
-    public void openScope(){
+    void openScope(){
         ++level;
     }
 
-    public void closeScope(){
+    void closeScope(){
         int pos = idEntries.size() - 1;
         while (pos >= 0 && idEntries.get(pos).level == level){
             idEntries.remove(pos);
@@ -72,7 +72,7 @@ public class IdentificationTable {
         return null;
     }
 
-    public boolean isDeclared(String id){
+    boolean isDeclared(String id){
         return find(id) != null;
     }
 

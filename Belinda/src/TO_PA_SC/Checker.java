@@ -29,6 +29,10 @@ public class Checker implements Visitor {
         Expression expression = assignment.getExpression();
         expression.visit(this, assignment);
         if(destination instanceof VarName){
+            if(((VarName) destination).getArraySize() == 0){
+                System.out.println("Error, " +((VarName) destination).getVarValue() + " is not a VarName, but a function");
+                System.exit(1);
+            }
             ((VarName) destination).setArrayValue(expression);
         }else if(destination instanceof ArrayEntry){
             ((ArrayEntry) destination).setValue(expression);
@@ -85,6 +89,10 @@ public class Checker implements Visitor {
     @Override
     public Object visitFunctionCall(FunctionCall functionCall, Object arg) {
         functionCall.getFuncName().visit(this, functionCall);
+        if(!(table.retrive(functionCall.getFuncName().getVarValue()).getVarName().isFunction())){
+            System.out.println("Error: " + functionCall.getFuncName() + " is not a function" );
+            System.exit(1);
+        }
         for (Expression exp: functionCall.getArguments()) {
             exp.visit(this, exp);
         }
@@ -94,6 +102,10 @@ public class Checker implements Visitor {
     @Override
     public Object visitFunctionCallAlone(FunctionCallAlone functionCallAlone, Object arg) {
         functionCallAlone.getFuncName().visit(this, functionCallAlone);
+        if(!(table.retrive(functionCallAlone.getFuncName().getVarValue()).getVarName().isFunction())){
+            System.out.println("Error: " + functionCallAlone.getFuncName().getVarValue() + " is not a function" );
+            System.exit(1);
+        }
         for (Expression exp: functionCallAlone.getArguments()) {
             exp.visit(this, exp);
         }
@@ -316,6 +328,10 @@ public class Checker implements Visitor {
         String id = arrayEntry.getFather().getVarValue();
         if(table.isDeclared(id)) {
             VarName realFather = table.retrive(id).getVarName();
+            if(realFather.isFunction()){
+                System.out.println("Error: " + id + " is a function");
+                System.exit(1);
+            }
             arrayEntry.setFather(realFather);
             realFather.addArrayEntry(arrayEntry);
         }else{
