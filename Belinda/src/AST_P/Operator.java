@@ -10,4 +10,8 @@ public class Operator extends AST {
     public Object visit(Visitor v, Object arg) {
         return v.visitOperator(this, arg);
     }
+
+    public char getOperator(){
+        return spelling.toCharArray()[1];
+    }
 }

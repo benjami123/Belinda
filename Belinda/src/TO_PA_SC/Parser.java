@@ -91,7 +91,7 @@ public class Parser
                     if(currentTerminal.kind == Token.LITERAL_NUMBER){
                         size = Integer.parseInt(currentTerminal.spelling);
                         if (size < 2){
-                            System.out.println("Error: array dimenion must be at least 1");
+                            System.out.println("Error: array dimension must be at least 1");
                             return null;
                         }
                         accept(Token.LITERAL_NUMBER);

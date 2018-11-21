@@ -84,10 +84,10 @@ public class Encoder implements Visitor {
         int size = ((Integer) block.getDeclarations().visit( this, arg )).intValue();
 
         patch( before, nextAdr );
-
-        if( size > 0 )
-            emit( Machine.PUSHop, 0, 0, size );
-
+        for(int i = 0; i < size; i++){
+            emit(Machine.LOADLop, 0, 0, 0);
+            //emit( Machine.PUSHop, 0, 0, 1); //if the code doesn't work uncoment
+        }
         block.getCommands().visit( this, null );
         return size;
     }
@@ -149,11 +149,18 @@ public class Encoder implements Visitor {
 
     @Override
     public Object visitCommands(Commands commands, Object arg) {
+        for (Command c : commands.getCommands()) {
+            c.visit(this, null);
+        }
         return null;
     }
 
     @Override
     public Object visitAssignment(Assignment assignment, Object arg) {
+        Expression destination = assignment.getVarName();
+        Expression value = assignment.getExpression();
+
+
         return null;
     }
 
@@ -210,6 +217,21 @@ public class Encoder implements Visitor {
 
     @Override
     public Object visistOperation(Operation operation, Object arg) {
+        switch (operation.getOperator().getOperator()){
+            case '+':
+                break;
+            case '-':
+                break;
+            case '*':
+                break;
+            case '/':
+                break;
+            case '%':
+                break;
+            case '<':
+                break;
+                
+        }
         return null;
     }
 

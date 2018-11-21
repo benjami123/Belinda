@@ -48,7 +48,9 @@ public class VarName extends Expression {
     }
 
     public void setArrayValue(Expression expression){
-        ((ArrayList<ArrayEntry>)arrayEntries).remove(0);
+        if(arrayEntries.size() == 1){
+            ((ArrayList<ArrayEntry>)arrayEntries).remove(0);
+        }
         arrayEntries.add(new ArrayEntry(this, null, expression));
     }
 
