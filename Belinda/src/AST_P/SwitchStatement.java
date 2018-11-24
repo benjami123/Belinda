@@ -23,4 +23,8 @@ public class SwitchStatement extends ConditionBlock {
     public Object visit(Visitor v, Object arg) {
         return v.visitSwitchStatement(this, arg);
     }
+
+    public int getNumberOfCases(){
+        return switchCases.size();
+    }
 }

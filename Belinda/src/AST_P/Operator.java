@@ -14,4 +14,8 @@ public class Operator extends AST {
     public char getOperator(){
         return spelling.toCharArray()[1];
     }
+
+    public String getSpelling() {
+        return spelling;
+    }
 }
