@@ -51,12 +51,23 @@ public class Checker implements Visitor {
     @Override
     public Object visitBlock(Block block, Object arg) {
         block.getDeclarations().visit(this, null);
-        block.getCommands().visit(this, null);
+        block.getCommands().visit(this, arg);
         return null;
     }
 
     @Override
     public Object visitDeclarations(Declarations declarations, Object arg) {
+        FunctionDeclaration fd = new FunctionDeclaration(new VarName("printI", true),
+                new TypeVars(new TypeVar(new Type("I"), new VarName("object"))),
+                null);
+        fd.visit(this, null);
+        FunctionDeclaration fd2 = new FunctionDeclaration(new VarName("printC", true),
+                new TypeVars(new TypeVar(new Type("C"), new VarName("object"))),
+                null);
+        fd2.visit(this, null);
+        FunctionDeclaration fdS = new FunctionDeclaration(new VarName("scan", true),
+                null, null);
+        fdS.visit(this, null);
         for (Declaration dec : declarations.getDeclaration()) {
             dec.visit(this, null);
         }
@@ -66,7 +77,7 @@ public class Checker implements Visitor {
     @Override
     public Object visitCommands(Commands commands, Object arg) {
         for (Command com : commands.getCommands()) {
-            com.visit(this, null);
+            com.visit(this, arg);
         }
         return null;
     }
@@ -117,13 +128,15 @@ public class Checker implements Visitor {
         functionDeclaration.getFuncName().visit(this, functionDeclaration);
         table.openScope();
         functionDeclaration.getTypeVars().visit(this, functionDeclaration.getTypeVars());
-        functionDeclaration.getBlock().visit(this, null);
+        functionDeclaration.getBlock().visit(this, functionDeclaration.getTypeVars().getTypeVars().size());
         table.closeScope();
         return null;
     }
 
     @Override
     public Object visitGiveBackWith(GiveBackWith giveBackWith, Object arg) {
+        int nArg = (Integer) arg;
+        giveBackWith.setNumberOfArguments(nArg);
         giveBackWith.getExpression().visit(this, giveBackWith);
         return null;
     }
