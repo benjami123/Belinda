@@ -1,0 +1,26 @@
+programStart
+  declare start
+    I i;
+    C c;
+    funName (I ii )
+    declare start
+        C cc;
+    declareEnd
+    do
+        printI(ii);
+        giveBackWith nothing;
+    doEnd;
+    fun (I iij )
+    declare start
+    declareEnd
+    do
+        printI(iij);
+        giveBackWith nothing;
+    doEnd;
+  declareEnd
+  do
+    funName(8);
+    fun(66);
+    funName(88);
+  doEnd
+programEnd

@@ -24,4 +24,8 @@ public class GiveBackWith extends Command {
     public Object visit(Visitor v, Object arg) {
         return v.visitGiveBackWith(this, arg);
     }
+
+    public void setExpression(Expression temp) {
+        expression = temp;
+    }
 }

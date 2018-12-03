@@ -1,0 +1,7 @@
+programStart
+  declare start
+  declareEnd
+  do
+    printC(|H|, |e|, |l|, |l|, |o|, | |, |W|, |o|, |r|, |l|, |d|, |!|,);
+  doEnd
+programEnd

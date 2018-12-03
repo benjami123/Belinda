@@ -27,4 +27,8 @@ public class SwitchStatement extends ConditionBlock {
     public int getNumberOfCases(){
         return switchCases.size();
     }
+
+    public void setVarName(VarName varName) {
+        this.varName = varName;
+    }
 }

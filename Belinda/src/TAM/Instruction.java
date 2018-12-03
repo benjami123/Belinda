@@ -61,4 +61,15 @@ public class Instruction {
             return null;
         }
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "op=" + op +
+                ", r=" + r +
+                ", n=" + n +
+                ", d=" + d +
+                '}';
+    }
+
 }

@@ -31,6 +31,9 @@ public class FunctionCall extends Expression {
         return numberOfArg;
     }
 
+    public void setFuncName(VarName funcName) {
+        this.funcName = funcName;
+    }
 
     @Override
     public Object visit(Visitor v, Object arg) {

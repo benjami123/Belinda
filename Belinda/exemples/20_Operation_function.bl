@@ -1,15 +1,16 @@
 programStart
   declare start
     I i;
-    C c;
-    funName (I ii )
+    funName (I ii, I jj )
     declare start
     declareEnd
     do
+        ii <- jj .+ ii;
         printI(ii);
     doEnd;
   declareEnd
   do
-    funName(5);
+    i <- 2;
+    funName(5, i);
   doEnd
 programEnd

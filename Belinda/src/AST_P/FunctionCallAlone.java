@@ -35,4 +35,8 @@ public class FunctionCallAlone extends AssignmentOrFunctionCallAlone {
     public Object visit(Visitor v, Object arg) {
         return v.visitFunctionCallAlone(this, arg);
     }
+
+    public void setFuncName(VarName funcName) {
+        this.funcName = funcName;
+    }
 }

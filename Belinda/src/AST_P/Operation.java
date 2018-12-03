@@ -28,4 +28,12 @@ public class Operation extends Expression {
     public Object visit(Visitor v, Object arg) {
         return v.visistOperation(this, arg);
     }
+
+    public void setLeft(Expression temp) {
+        left = temp;
+    }
+
+    public void setRight(Expression temp){
+        right = temp;
+    }
 }

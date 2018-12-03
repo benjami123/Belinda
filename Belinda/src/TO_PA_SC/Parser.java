@@ -282,6 +282,7 @@ public class Parser
 							break;
 						case Token.ELSE:
 							accept(Token.ELSE);
+							ifOtherOperations.add(new LiteralNumber("1"));
 							ifOtherCommands.add(parseComand(Token.FI));
 							if(currentTerminal.kind != Token.FI){
 								error = true;
@@ -460,6 +461,7 @@ public class Parser
 						expression = parseOperationOnLeft(litNum, op);
 						break;
 					case Token.ASSIG_RIGHT:
+						expression = litNum;
 						break;
 					default:
 						System.out.println("Error expected operator or right assignment after literal number in right assignment");

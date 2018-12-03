@@ -1,7 +1,6 @@
 programStart
   declare start
-    I i, g, h;
-    C c;
+    I i;
     funName (I ii )
     declare start
     declareEnd
@@ -10,9 +9,7 @@ programStart
     doEnd;
   declareEnd
   do
-    for( i<- funName(3) ;i .> 6 .-3; .-1) start
-        c -> g;
-
-    forEnd
+    i <- funName(5);
+    printI(i);
   doEnd
 programEnd

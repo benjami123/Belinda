@@ -11,10 +11,7 @@
 
 import AST_P.AST;
 import AST_P.Program;
-import TO_PA_SC.Checker;
-import TO_PA_SC.Parser;
-import TO_PA_SC.Scanner;
-import TO_PA_SC.SourceFile;
+import TO_PA_SC.*;
 
 import javax.swing.*;
 
@@ -38,5 +35,9 @@ public class TestChecker
 		System.out.println(programTree);
 		Checker c = new Checker();
 		c.check((Program) programTree);
+		Encoder e = new Encoder();
+		e.encode((Program) programTree);
+
+
 	}
 }

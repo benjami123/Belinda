@@ -1,16 +1,13 @@
 programStart
   declare start
-    I i, g, h;
-    C c;
-    funName (I ii , C car)
-    declare start
-    declareEnd
-    do
-        giveBackWith ii .+ 2;
-    doEnd;
+    I c, a, b;
   declareEnd
   do
-    c <- g .+ i;
-    funName(h, 5);
+    a <- 2;
+    printI(a);
+    5 -> b;
+    printI(b);
+    c <- b ./ b;
+    printI(c);
   doEnd
 programEnd

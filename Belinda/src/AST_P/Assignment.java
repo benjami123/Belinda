@@ -28,6 +28,14 @@ public class Assignment extends AssignmentOrFunctionCallAlone {
         return expression;
     }
 
+    public void setVarNameOrArrayEntr(Expression varNameOrArrayEntr) {
+        this.varNameOrArrayEntr = varNameOrArrayEntr;
+    }
+
+    public void setExpression(Expression expression) {
+        this.expression = expression;
+    }
+
     @Override
     public Object visit(Visitor v, Object arg) {
         return v.visitAssignment(this, arg);

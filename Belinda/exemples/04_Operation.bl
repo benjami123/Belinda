@@ -4,9 +4,6 @@ programStart
     C c;
   declareEnd
   do
-    c <- |h|;
-    for( i<-6 ;i .> 3; .-1) start
-        printC(c);
-    forEnd
+    i .+ 4 .*3 .-9 .or 7 .and 3 -> h;
   doEnd
 programEnd
