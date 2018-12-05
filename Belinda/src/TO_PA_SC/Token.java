@@ -150,9 +150,7 @@ public class Token {
 			".<",
 			".>",
 			".<=",
-			".>=",
-			".or",
-			".and"
+			".>="
 	};
 
 	private static final String ADDOPS[] = {

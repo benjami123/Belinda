@@ -637,8 +637,18 @@ public class Parser
 		while(currentTerminal.kind != Token.RIGHTPARAN) {
 			switch (currentTerminal.kind){
 				case Token.VARN_NAME:
-					arguments.add(new VarName(currentTerminal.spelling));
+					VarName varT = new VarName(currentTerminal.spelling);
+
 					accept(Token.VARN_NAME);
+					if(currentTerminal.kind == Token.LEFTBRA){
+						accept(Token.LEFTBRA);
+						ArrayEntry ar = new ArrayEntry(varT,parseOperationOnRight(),null);
+						accept(Token.SEMICOLON);
+						accept(Token.RIGHTBRA);
+						arguments.add(ar);
+					}else{
+						arguments.add(varT);
+					}
 					break;
 				case Token.LITERAL_NUMBER:
 					arguments.add(new LiteralNumber(currentTerminal.spelling));
@@ -648,7 +658,7 @@ public class Parser
 					System.out.println("Error: expected var name or literal number as arguments for functionDeclaration call");
 					break;
 			}
-			if (currentTerminal.spelling.equals(",")) {
+			if (currentTerminal.spelling.equals(",")){
 				accept(Token.COMMA);
 				/*
 				 * If the next spelling is not a ')' you get an error because we already checked the comma option

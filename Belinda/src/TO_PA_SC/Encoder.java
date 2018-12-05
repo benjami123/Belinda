@@ -227,7 +227,7 @@ public class Encoder implements Visitor {
                     sizeArg+=1;
                 }
                 sizeArg += (Integer) exp.visit(this, arg);
-                if(exp instanceof VarName){
+                if(exp instanceof VarName || exp instanceof ArrayEntry){
                     sizeArg+=1;
                 }
             }
@@ -240,7 +240,7 @@ public class Encoder implements Visitor {
         if(functionCall.getFuncName().getVarValue().equals("printC")){
             for (Expression exp: functionCall.getArguments()) {
                 exp.visit(this, arg);
-                if(exp instanceof VarName){
+                if(exp instanceof VarName || exp instanceof ArrayEntry){
                     emit(Machine.LOADAop, 1, 0,0);
                 }
                 emit(Machine.CALLop, 0,Machine.PBr, Machine.putDisplacement);
@@ -249,14 +249,14 @@ public class Encoder implements Visitor {
         }else if(functionCall.getFuncName().getVarValue().equals("printI")){
             for (Expression exp: functionCall.getArguments()) {
                 exp.visit(this, arg);
-                if(exp instanceof VarName){
+                if(exp instanceof VarName || exp instanceof ArrayEntry){
                     emit(Machine.LOADIop, 1, 0,0);
                 }
                 emit(Machine.CALLop, 0,Machine.PBr, Machine.putintDisplacement);
                 emit(Machine.CALLop, 0,Machine.PBr, Machine.puteolDisplacement);
             }
         }else if(functionCall.getFuncName().getVarValue().equals("scan")){
-            emit(Machine.CALLop, 0,Machine.PBr, Machine.getintDisplacement);
+            emit(Machine.CALLop, 0, Machine.PBr, Machine.getintDisplacement);
         }else{
             for (int i = functionCall.getArguments().size() -1; i >= 0; i--) {
                 Expression exp = ((ArrayList<Expression>)functionCall.getArguments()).get(i);
@@ -284,7 +284,7 @@ public class Encoder implements Visitor {
                     sizeArg+=1;
                 }
                 sizeArg += (Integer) exp.visit(this, arg);
-                if(exp instanceof VarName){
+                if(exp instanceof VarName || exp instanceof ArrayEntry){
                     sizeArg+=1;
                 }
             }
@@ -299,23 +299,24 @@ public class Encoder implements Visitor {
         if(functionCallAlone.getFuncName().getVarValue().equals("printC")){
             for (Expression exp: functionCallAlone.getArguments()) {
                 exp.visit(this, arg);
-                if(exp instanceof VarName){
+                if(exp instanceof VarName || exp instanceof ArrayEntry){
                     emit(Machine.LOADIop, 1, 0,0);
                 }
                 emit(Machine.CALLop, 0,Machine.PBr, Machine.putDisplacement);
-                //emit(Machine.CALLop, 0,Machine.PBr, Machine.puteolDisplacement);
+                emit(Machine.CALLop, 0,Machine.PBr, Machine.puteolDisplacement);
             }
         }else if(functionCallAlone.getFuncName().getVarValue().equals("printI")){
             for (Expression exp: functionCallAlone.getArguments()) {
                 exp.visit(this, arg);
-                if(exp instanceof VarName){
+                if(exp instanceof VarName || exp instanceof ArrayEntry){
                     emit(Machine.LOADIop, 1, 0,0);
                 }
                 emit(Machine.CALLop, 0,Machine.PBr, Machine.putintDisplacement);
                 emit(Machine.CALLop, 0,Machine.PBr, Machine.puteolDisplacement);
+
             }
         }else if(functionCallAlone.getFuncName().getVarValue().equals("scan")){
-            emit(Machine.CALLop, 0,Machine.PBr, Machine.getintDisplacement);
+            emit(Machine.CALLop, 0, Machine.PBr, Machine.getintDisplacement);
         }else{
             for (int i = functionCallAlone.getArguments().size() -1; i >= 0; i--) {
                 Expression exp = ((ArrayList<Expression>)functionCallAlone.getArguments()).get(i);
@@ -339,13 +340,13 @@ public class Encoder implements Visitor {
         if((Integer)arg==-1){
             if(giveBackWith.getExpression() instanceof Nothing){
                 return 1;
-            }else if(giveBackWith.getExpression() instanceof VarName){
+            }else if(giveBackWith.getExpression() instanceof VarName || giveBackWith.getExpression() instanceof ArrayEntry){
                 return 3;
             }else {
                 return (Integer) giveBackWith.getExpression().visit(this, arg) + 1;
             }
         }
-        if(giveBackWith.getExpression() instanceof VarName){
+        if(giveBackWith.getExpression() instanceof VarName || giveBackWith.getExpression() instanceof ArrayEntry){
             giveBackWith.getExpression().visit(this, arg);
             emit(Machine.LOADIop, 1, 0, 0);
         }else {
@@ -375,10 +376,16 @@ public class Encoder implements Visitor {
     public Object visitAssignment(Assignment assignment, Object arg) {
         if((Integer) arg == -1){
             int dis = (Integer) assignment.getExpression().visit(this, -1);
+            if(assignment.getExpression() instanceof VarName){
+                dis++;
+            }
             dis += (Integer) assignment.getVarName().visit(this, -1);
             return dis +1;
         }
         assignment.getExpression().visit(this, arg);
+        if(assignment.getExpression() instanceof VarName){
+            emit(Machine.LOADIop, 1, 0, 0);
+        }
         assignment.getVarName().visit(this, arg);
         emit(Machine.STOREIop, 1, 0, 0);
         return null;
@@ -406,95 +413,87 @@ public class Encoder implements Visitor {
 
     @Override
     public Object visitSwitchStatement(SwitchStatement switchStatement, Object arg) {
-        try {
-            Integer integer = (Integer) arg;
-            if(integer == -1){
-                int cases = switchStatement.getNumberOfCases();
-                int [] displacements = new int[cases];
-                int i = 0;
-                for (SwitchCase swc: switchStatement.getSwitchCases()) {
-                    i++;
-                    displacements[i] = (Integer) swc.visit(this, -1);
-                }
-                int currentCaseDisplacement;
-                int numbersOfIfs = 0;
-                for (SwitchCase swCs: switchStatement.getSwitchCases()) {
+        if((Integer) arg == -1){
+            int cases = switchStatement.getNumberOfCases();
+            int [] displacements = new int[cases];
+            int i = 0;
+            for (SwitchCase swc: switchStatement.getSwitchCases()) {
+                displacements[i] = (Integer) swc.visit(this, -1);
+                i++;
+            }
+            int currentCaseDisplacement;
+            int numbersOfIfs = 0;
+            for (SwitchCase swCs: switchStatement.getSwitchCases()) {
+                if(swCs.getLiteralNumbers() != null){
                     for (LiteralNumber posibilities: swCs.getLiteralNumbers()) {
                         numbersOfIfs++;
                     }
+                }else{
+                    numbersOfIfs++;
                 }
-                currentCaseDisplacement = numbersOfIfs + 1;
-                for(i = 0; i < displacements.length; i++){
-                    currentCaseDisplacement += displacements[i];
-                }
-                return currentCaseDisplacement;
             }
-        }catch (Exception e){
-
+            currentCaseDisplacement = numbersOfIfs;
+            for(i = 0; i < displacements.length; i++){
+                currentCaseDisplacement += displacements[i];
+            }
+            return currentCaseDisplacement;
         }
+        int endAddress = (Integer) switchStatement.visit(this, -1);
         int cases = switchStatement.getNumberOfCases();
         int [] displacements = new int[cases];
         int i = 0;
         for (SwitchCase swc: switchStatement.getSwitchCases()) {
             //displacements[i] = nextAdr;
-            i++;
             displacements[i] = (Integer) swc.visit(this, -1);
+            i++;
         }
-        i = 0;
         int currentCaseDisplacement = 0;
         int numbersOfIfs = 0;
         int varAddress = switchStatement.getVarName().getAddress().displacement;
 
         for (SwitchCase swCs: switchStatement.getSwitchCases()) {
+            if(swCs.getLiteralNumbers() != null){
                 numbersOfIfs += swCs.getLiteralNumbers().size();
+            }else {
+                numbersOfIfs++;
+            }
         }
-        currentCaseDisplacement = numbersOfIfs + 1;
-        emit(Machine.LOADop, 1, varAddress, 0);
+        currentCaseDisplacement = numbersOfIfs;
+        emit(Machine.LOADop, 1, Machine.SBr, varAddress);
         for(i = 0; i < switchStatement.getSwitchCases().size() - 1; i++){
             for (LiteralNumber posibilities: ((ArrayList<SwitchCase>)switchStatement.getSwitchCases()).get(i).getLiteralNumbers()) {
-                emit(Machine.JUMPIFop, posibilities.getiValue(), Machine.CBr, nextAdr + currentCaseDisplacement);
+                emit(Machine.JUMPIFop, posibilities.getiValue(), Machine.CPr, currentCaseDisplacement);
             }
             currentCaseDisplacement += displacements[i];
+            currentCaseDisplacement--; //for the if that was just emited
         }
-        emit(Machine.JUMPop, 0,  Machine.CBr,nextAdr + currentCaseDisplacement);
-        currentCaseDisplacement += displacements[i + 1];
-        //patch( addreses[i], nextAdr ); maybe
-
-        int switchEndAddress = nextAdr; //        ------ //TOdO:: check
+        emit(Machine.JUMPop, 0,  Machine.CPr, currentCaseDisplacement);
+        currentCaseDisplacement += displacements[i];
+        endAddress -= numbersOfIfs;
         for (SwitchCase swc: switchStatement.getSwitchCases()) {
-            swc.visit(this, currentCaseDisplacement);
+            endAddress -=  (Integer) swc.visit(this, -1);
+            swc.visit(this, endAddress);
         }
         return null;
     }
 
     @Override
     public Object visitSwitchCase(SwitchCase switchCase, Object arg) {
-        try {
-            if((Integer) arg == -1){
-                int startAddress  = 0;
-                int endAddress = (Integer) switchCase.getCommands().visit(this, arg);
-                //increase each dispacement by one because of the break
-                return endAddress - startAddress;
-            }
-        }catch (Exception e){
-
+        if((Integer) arg == -1){
+            return (Integer)switchCase.getCommands().visit(this, arg) + 1;//one for the end
         }
 
         switchCase.getCommands().visit(this, arg);
+        switchCase.getEnd().visit(this, arg);
         return null;
     }
 
     @Override
     public Object visitEnd(End end, Object arg) {
-        try {
-            Integer i = (Integer) arg;
-            if(i == -1){
-                return 1;
-            }
-        }catch (Exception e){
-
+        if((Integer) arg == -1){
+            return 1;
         }
-        emit(Machine.JUMPop,0, Machine.CBr, (Integer)arg);
+        emit(Machine.JUMPop,0, Machine.CPr, (Integer)arg + 1);
         return null;
     }
 
@@ -521,7 +520,7 @@ public class Encoder implements Visitor {
 
         }
         negation.getVarNameOrLiteralNumber().visit(this, null);
-        emit(Machine.CALLop, 0 ,0, Machine.notDisplacement);
+        emit(Machine.CALLop, 0 ,Machine.PBr, Machine.notDisplacement);
         return null;
     }
 
@@ -568,16 +567,10 @@ public class Encoder implements Visitor {
                 }
                 break;
             case '=':
-                emit(Machine.CALLop, 0 ,Machine.PBr, Machine.eqDisplacement);
+                emit(Machine.CALLop, 1 ,Machine.PBr, Machine.eqDisplacement);
                 break;
             default:
-                if(str.equals(".and")){
-                    emit(Machine.CALLop, 0 ,Machine.PBr, Machine.andDisplacement);
-                }else if(str.equals(".or")){
-                    emit(Machine.CALLop, 0 ,Machine.PBr, Machine.orDisplacement);
-                }else{
-                    System.out.println("Congratulation, you reached places that nobody ever been before");
-                }
+                System.out.println("Congratulation, you reached places that nobody ever been before");
                 break;
         }
         return null;
@@ -599,20 +592,20 @@ public class Encoder implements Visitor {
         if((Integer) arg == -1) {
             int dis = (Integer) operation.getLeft().visit(this, arg);
             dis += (Integer) operation.getRight().visit(this, arg);
-            if (operation.getLeft() instanceof VarName) {
+            if (operation.getLeft() instanceof VarName || operation.getLeft() instanceof ArrayEntry) {
                 dis++;
             }
-            if (operation.getRight() instanceof VarName) {
+            if (operation.getRight() instanceof VarName || operation.getRight() instanceof ArrayEntry) {
                 dis++;
             }
             return dis + 1;
         }
         operation.getLeft().visit(this, arg);
-        if(operation.getLeft() instanceof VarName){
+        if(operation.getLeft() instanceof VarName || operation.getLeft() instanceof ArrayEntry){
             emit(Machine.LOADIop, 1, 0, 0);
         }
         operation.getRight().visit(this, arg);
-        if(operation.getRight() instanceof VarName){
+        if(operation.getRight() instanceof VarName || operation.getRight() instanceof ArrayEntry){
             emit(Machine.LOADIop, 1, 0, 0);
         }
         operation.getOperator().visit(this, arg);
@@ -622,7 +615,6 @@ public class Encoder implements Visitor {
 
 
     //ToDo:do arrays
-    //ToDo: debug everything, specially  ifs and arrays
     //ToDo Scan
     @Override
     public Object visitForLoop(ForLoop forLoop, Object arg) {
@@ -632,7 +624,6 @@ public class Encoder implements Visitor {
                     + (Integer) forLoop.getOperation().visit(this, arg)
                     + (Integer) forLoop.getCommands().visit(this, arg)
                     + (Integer) forLoop.getAssignment().getVarName().visit(this, arg)
-                    +  1
                     + (Integer) forLoop.getModifier().visit(this, arg)
                     + (Integer) forLoop.getOperator().visit(this, arg)
                     + 1 //to load the address to be assigned
@@ -645,7 +636,7 @@ public class Encoder implements Visitor {
                 - (Integer) forLoop.getAssignment().visit(this, -1)
                 - (Integer) forLoop.getOperation().visit(this, -1);
         forLoop.getOperation().visit(this, arg);
-        emit( Machine.JUMPIFop, 0, Machine.CPr, endAddress);
+        emit( Machine.JUMPIFop, 0, Machine.CPr, endAddress + 1);
         forLoop.getCommands().visit(this, arg);
         forLoop.getAssignment().getVarName().visit(this, arg);
         emit(Machine.LOADIop, 1,0, 0);
@@ -659,33 +650,42 @@ public class Encoder implements Visitor {
 
     @Override
     public Object visitIfStatement(IfStatement ifStatement, Object arg) {
-        try {
-            if((Integer) arg == -1){
-                int displ =  (Integer) ifStatement.getMainOperation().visit(this, arg) + 1
-                        + (Integer) ifStatement.getMainCommands().visit(this, arg);
-                for (int i = 0; i < ifStatement.getOtherCommands().size(); i++) {
-                    displ += (Integer) ((ArrayList<Expression>)ifStatement
-                            .getOtherOperations()).get(i).visit(this, arg) + 1; //one for the jump after the operation
-                    displ += (Integer) ((ArrayList<Commands>)ifStatement.getOtherCommands()).get(i).visit(this, arg);
-                }
-                return displ;
+        if((Integer) arg == -1){
+            int mainOp = (Integer) ifStatement.getMainOperation().visit(this, arg)
+                    + 1; //jump if
+            int mainCom = (Integer) ifStatement.getMainCommands().visit(this, arg)
+                    + 1; //jump at the end;
+            mainOp+= mainCom;
+            int otherOp = 0;
+            for (int i = 0; i < ifStatement.getOtherCommands().size(); i++) {
+                otherOp += (Integer) ((ArrayList<Expression>)ifStatement.getOtherOperations()).get(i).visit(this, arg)
+                        + 1; //for the jump if
+                otherOp += (Integer) ((ArrayList<Commands>)ifStatement.getOtherCommands()).get(i).visit(this, arg)
+                        + 1; //one for the jump after the commands
             }
-        }catch (Exception e){
-
+            return otherOp + mainOp;
         }
 
-        int endAddress = (Integer) ifStatement.visit(this, -1);
+        int endAddress = (Integer) ifStatement.visit(this, -1) + 1; //beacause it has to jump after the last comand
         ifStatement.getMainOperation().visit(this, arg);
+        endAddress -= (Integer) ifStatement.getMainOperation().visit(this, -1); //for the jumpif;
+        endAddress--;
         int tempSize = (Integer) ifStatement.getMainCommands().visit(this, -1);
-        emit( Machine.JUMPIFop, 0, Machine.CBr, tempSize);
+        tempSize += 1; //one for the jump
+        emit( Machine.JUMPIFop, 0, Machine.CPr, tempSize + 1); //  and one because it has to jump over it)
+        endAddress -= tempSize;
         ifStatement.getMainCommands().visit(this, arg);
-        emit( Machine.JUMPop, 0, Machine.CBr, endAddress);
+        emit( Machine.JUMPop, 0, Machine.CPr, endAddress);
+        endAddress--;
         for (int i = 0; i < ifStatement.getOtherCommands().size(); i++) {
             ((ArrayList<Expression>)ifStatement.getOtherOperations()).get(i).visit(this, arg);
-            tempSize = (Integer) ((ArrayList<Commands>)ifStatement.getOtherCommands()).get(i).visit(this, -1);
-            emit( Machine.JUMPIFop, 0, Machine.CBr,tempSize);
+            tempSize = (Integer) ((ArrayList<Expression>)ifStatement.getOtherOperations()).get(i).visit(this, -1) + 1;
+            endAddress -= tempSize;
+            tempSize = (Integer) ((ArrayList<Commands>)ifStatement.getOtherCommands()).get(i).visit(this, -1) +1;
+            emit( Machine.JUMPIFop, 0, Machine.CPr, tempSize + 1);
             ((ArrayList<Commands>)ifStatement.getOtherCommands()).get(i).visit(this, arg);
-            emit( Machine.JUMPop, 0, Machine.CBr, endAddress);
+            endAddress -= tempSize;
+            emit( Machine.JUMPop, 0, Machine.CPr, endAddress + 1);
         }
         return null;
     }
@@ -710,6 +710,19 @@ public class Encoder implements Visitor {
 
     @Override
     public Object visitArrayEntry(ArrayEntry arrayEntry, Object arg) {
+        if((Integer) arg == -1){
+            if(arrayEntry.getIndex() instanceof VarName){
+                return 3 + (Integer) arrayEntry.getIndex().visit(this, arg);
+            }
+            return 2 + (Integer) arrayEntry.getIndex().visit(this, arg);
+        }
+        int disp = arrayEntry.getFather().getAddress().displacement;
+        arrayEntry.getIndex().visit(this, arg);
+        if(arrayEntry.getIndex() instanceof VarName){
+            emit(Machine.LOADIop, 1, 0,0);
+        }
+        emit(Machine.LOADLop, 0,0, disp);
+        emit(Machine.CALLop, 0 ,Machine.PBr, Machine.addDisplacement);
         return null;
     }
 }

@@ -6,6 +6,12 @@ public class LiteralNumber extends Expression {
 
     public LiteralNumber(String value) {
         this.sValue = value;
+        try {
+            this.iValue = Integer.parseInt(sValue);
+
+        }catch (Exception e){
+            iValue = 0;
+        }
     }
     @Override
     public Object visit(Visitor v, Object arg) {

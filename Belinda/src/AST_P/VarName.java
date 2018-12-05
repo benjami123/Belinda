@@ -44,7 +44,6 @@ public class VarName extends Expression {
 
     public void addArrayEntry(ArrayEntry ae){
         arrayEntries.add(ae);
-        sizeArray++;
     }
 
     public void setArrayValue(Expression expression){

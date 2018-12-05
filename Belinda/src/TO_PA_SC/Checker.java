@@ -209,11 +209,17 @@ public class Checker implements Visitor {
     public Object visistOperation(Operation operation, Object arg) {
         Expression temp = (Expression) operation.getLeft().visit(this, operation);
         if(temp instanceof VarName){
+            if( table.retrive(((VarName) temp).getVarValue()) != null){
+                temp= table.retrive(((VarName) temp).getVarValue()).getVarName();
+            }
             operation.setLeft(temp);
         }
         operation.getOperator().visit(this, null);
         temp = (Expression) operation.getRight().visit(this, operation);
         if(temp instanceof VarName){
+            if( table.retrive(((VarName) temp).getVarValue()) != null){
+                temp = table.retrive(((VarName) temp).getVarValue()).getVarName();
+            }
             operation.setRight(temp);
         }
         return null;
@@ -395,6 +401,15 @@ public class Checker implements Visitor {
             System.out.println("Error: " + id + " not declared");
             System.exit(1);
         }
-        return null;
+        VarName father = arrayEntry.getFather();
+        father = table.retrive(father.getVarValue()).getVarName();
+        arrayEntry.setFather(father);
+        if(arrayEntry.getIndex() instanceof VarName){
+            VarName index = (VarName) arrayEntry.getIndex();
+            index = table.retrive(index.getVarValue()).getVarName();
+            arrayEntry.setIndex(index);
+        }
+        arrayEntry.getIndex().visit(this, arg);
+        return arrayEntry;
     }
 }

@@ -1,18 +1,19 @@
 programStart
   declare start
-    I i, g, h;
-    C c;
+  I g;
   declareEnd
   do
+   -88 -> g;
     switch(g):
       case 7 start
+        printI(1);
       end;
       case -8 start
+        printI(2);
       end;
       default start
-      func();
+        printI(3);
       end;
       switchEnd
-    giveBackWith nothing;
   doEnd
 programEnd

@@ -1,22 +1,13 @@
 programStart
-  declare start
-    I i, g, h;
-    C c;
-    funName (I ii )
     declare start
     declareEnd
-    do
-      if( 5.*6.-9.=3;) start
-          end;
-        elif( 5.*6.-9;) start
-          funName(9);
-        else
-          giveBackWith -5;
-        fi
-        giveBackWith ii;
-    doEnd;
-  declareEnd
-  do
-    giveBackWith funName(i);
-  doEnd
+        do
+            if( 5.*6.-9.-7.-14;) start
+                printC(|1|);
+            elif(0;) start
+                printC(|2|);
+            else
+                printC(|3|);
+            fi
+doEnd
 programEnd

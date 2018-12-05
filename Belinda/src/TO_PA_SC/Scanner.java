@@ -115,27 +115,6 @@ public class Scanner
                     case '+': case '-': case '*': case '/': case '%': case '<': case '>': case '=':
                         takeIt();
                         return Token.OPERATOR;
-                    case 'a':
-                        takeIt();
-                        if(currentChar == 'n'){
-                            takeIt();
-                            if(currentChar == 'd'){
-                                takeIt();
-                                return Token.OPERATOR;
-                            }else {
-                                return Token.ERROR;
-                            }
-                        }else {
-                            return Token.ERROR;
-                        }
-                    case 'o':
-                        takeIt();
-                        if(currentChar == 'r'){
-                            takeIt();
-                            return Token.OPERATOR;
-                        }else {
-                            return Token.ERROR;
-                        }
                     case  'n':
                         takeIt();
                         if(currentChar == 'o'){

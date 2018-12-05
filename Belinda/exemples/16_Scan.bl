@@ -1,9 +1,9 @@
 programStart
   declare start
-    I i, g, h;
-    C c;
+    I i, g;
   declareEnd
   do
-    i .+ 4 .*3 .-9 .or 7 .and 3 -> h;
+    i<- scan();
+    printI(i);
   doEnd
 programEnd
