@@ -1,7 +1,7 @@
 package AST_P;
 
 public class Type extends AST {
-    private String type;
+    private String type; //USED for debugging purpose
 
     public Type(String type) {
         this.type = type;

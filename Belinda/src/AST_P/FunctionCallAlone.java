@@ -13,10 +13,9 @@ public class FunctionCallAlone extends AssignmentOrFunctionCallAlone {
         this.numberOfArg = arguments.size();
     }
 
-    public FunctionCallAlone(VarName funcName) {
-        this.funcName = funcName;
-        this.arguments = null;
-        this.numberOfArg = 0;
+    public void setArguments(Collection<Expression> arguments) {
+        this.arguments = arguments;
+        numberOfArg = arguments.size();
     }
 
     public VarName getFuncName() {
@@ -27,9 +26,6 @@ public class FunctionCallAlone extends AssignmentOrFunctionCallAlone {
         return arguments;
     }
 
-    public int getNumberOfArg() {
-        return numberOfArg;
-    }
 
     @Override
     public Object visit(Visitor v, Object arg) {

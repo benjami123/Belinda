@@ -7,16 +7,15 @@ public class FunctionCall extends Expression {
     private Collection<Expression> arguments;
     private int numberOfArg;
 
+    public void setArguments(Collection<Expression> arguments) {
+        this.arguments = arguments;
+        numberOfArg = arguments.size();
+    }
+
     public FunctionCall(VarName funcName, Collection<Expression> arguments) {
         this.funcName = funcName;
         this.arguments = arguments;
         this.numberOfArg = arguments.size();
-    }
-
-    public FunctionCall(VarName funcName) {
-        this.funcName = funcName;
-        this.arguments = null;
-        this.numberOfArg = 0;
     }
 
     public VarName getFuncName() {
@@ -25,10 +24,6 @@ public class FunctionCall extends Expression {
 
     public Collection<Expression> getArguments() {
         return arguments;
-    }
-
-    public int getNumberOfArg() {
-        return numberOfArg;
     }
 
     public void setFuncName(VarName funcName) {

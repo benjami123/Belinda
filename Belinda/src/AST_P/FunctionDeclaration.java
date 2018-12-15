@@ -2,7 +2,6 @@ package AST_P;
 
 import TO_PA_SC.Address;
 
-import java.util.Vector;
 
 public class FunctionDeclaration extends Declaration{
     private VarName funcName;

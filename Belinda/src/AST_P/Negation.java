@@ -1,6 +1,10 @@
 package AST_P;
 
 public class Negation extends Expression {
+    public void setVarNameOrLiteralNumber(Expression varNameOrLiteralNumber) {
+        this.varNameOrLiteralNumber = varNameOrLiteralNumber;
+    }
+
     private Expression varNameOrLiteralNumber;
 
 
@@ -18,6 +22,6 @@ public class Negation extends Expression {
     }
     @Override
     public Object visit(Visitor v, Object arg) {
-        return v.visistNegation(this, arg);
+        return v.visitNegation(this, arg);
     }
 }

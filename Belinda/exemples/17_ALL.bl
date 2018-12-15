@@ -1,0 +1,40 @@
+programStart
+  declare start
+    I i;
+    fibo (I finish)
+    declare start
+    I one, two, next;
+    declareEnd
+    do
+        one<-0;
+        two<-1;
+        while(one .< finish;) start
+            printI(one);
+            one .+ two -> next;
+            one <- two;
+            two <- next;
+        whileEnd
+        giveBackWith nothing;
+    doEnd;
+    fibo2 (I finish)
+        declare start
+        I one, two, next;
+        declareEnd
+        do
+            one<-0;
+            two<-1;
+            while(one .< finish;) start
+                printI(one);
+                one .+ two -> next;
+                one <- two;
+                two <- next;
+            whileEnd
+            giveBackWith nothing;
+        doEnd;
+  declareEnd
+  do
+    i <- 20;
+    fibo(i);
+    fibo2(10000);
+  doEnd
+programEnd

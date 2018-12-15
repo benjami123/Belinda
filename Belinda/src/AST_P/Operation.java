@@ -1,7 +1,5 @@
 package AST_P;
 
-import java.util.Collection;
-
 public class Operation extends Expression {
     private Expression left;
     private Operator operator;
@@ -26,7 +24,7 @@ public class Operation extends Expression {
     }
     @Override
     public Object visit(Visitor v, Object arg) {
-        return v.visistOperation(this, arg);
+        return v.visitOperation(this, arg);
     }
 
     public void setLeft(Expression temp) {
