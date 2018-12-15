@@ -3,7 +3,7 @@ programStart
     I i, g;
   declareEnd
   do
-    i<- 6 .+ .not 3;
+    i<- 6 .+ .not 1;
     printI(i);
   doEnd
 programEnd

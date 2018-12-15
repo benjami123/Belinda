@@ -424,7 +424,7 @@ public class Encoder implements Visitor {
             iteration = fc.getArguments().size();
             functionName = fc.getFuncName().getVarValue();
             arguments =(ArrayList<Expression>) fc.getArguments();
-            if(fca.getFuncName().getAddress() != null){
+            if(fc.getFuncName().getAddress() != null){
                 address = fc.getFuncName().getAddress().displacement;
             }
         }else{
@@ -578,7 +578,7 @@ public class Encoder implements Visitor {
         if((Integer) arg == -1){
             return 2;
         }
-        negation.getVarNameOrLiteralNumber().visit(this, null);
+        negation.getVarNameOrLiteralNumber().visit(this, arg);
         emit(Machine.CALLop, 0 ,Machine.PBr, Machine.notDisplacement);
         return null;
     }
