@@ -7,7 +7,7 @@ programStart
     printI(a);
     5 -> b;
     printI(b);
-    c <- b;
-    printI(c);
+    c <- 5;
+    printI(-5);
   doEnd
 programEnd

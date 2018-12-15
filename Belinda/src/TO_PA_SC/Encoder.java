@@ -181,6 +181,11 @@ public class Encoder implements Visitor {
     }
 
     @Override
+    public Object visitType(Type type, Object arg) {
+        return null;
+    }
+
+    @Override
     public Object visitFunctionDeclaration(FunctionDeclaration functionDeclaration, Object arg) {
         if((Integer) arg == -1){
             int blockSize = (Integer)functionDeclaration.getBlock().visit(this, arg);
@@ -411,7 +416,7 @@ public class Encoder implements Visitor {
 
     private Object dealWithFunctionsCalls(FunctionCall fc, FunctionCallAlone fca, Object arg){
         int iteration;
-        int address;
+        int address = 0;
         String functionName;
         ArrayList<Expression> arguments;
         Expression temp;
@@ -419,12 +424,16 @@ public class Encoder implements Visitor {
             iteration = fc.getArguments().size();
             functionName = fc.getFuncName().getVarValue();
             arguments =(ArrayList<Expression>) fc.getArguments();
-            address = fc.getFuncName().getAddress().displacement;
+            if(fca.getFuncName().getAddress() != null){
+                address = fc.getFuncName().getAddress().displacement;
+            }
         }else{
             iteration = fca.getArguments().size();
             functionName = fca.getFuncName().getVarValue();
             arguments =(ArrayList<Expression>) fca.getArguments();
-            address = fca.getFuncName().getAddress().displacement;
+            if(fca.getFuncName().getAddress() != null){
+                address = fca.getFuncName().getAddress().displacement;
+            }
         }
         if((Integer)arg == -1){
             if(functionName.equals("scan")){

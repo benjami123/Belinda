@@ -69,6 +69,11 @@ public class Checker implements Visitor {
     }
 
     @Override
+    public Object visitType(Type type, Object arg) {
+        return null;
+    }
+
+    @Override
     public Object visitFunctionDeclaration(FunctionDeclaration functionDeclaration, Object arg) {
         functionDeclaration.getFuncName().visit(this, functionDeclaration);
         table.openScope();

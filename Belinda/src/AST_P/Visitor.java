@@ -7,6 +7,7 @@ public interface Visitor {
     Object visitInitializationTo0(InitializationTo0 initializationTo0, Object arg);
     Object visitTypeVars(TypeVars typeVars, Object arg);
     Object visitTypeVar(TypeVar typeVar, Object arg);
+    Object visitType(Type type, Object arg);
     Object visitFunctionDeclaration(FunctionDeclaration functionDeclaration, Object arg);
     Object visitCommands(Commands commands, Object arg);
     Object visitAssignment(Assignment assignment, Object arg);
